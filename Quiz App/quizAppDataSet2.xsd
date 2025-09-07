@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="quizAppDataSet2" targetNamespace="http://tempuri.org/quizAppDataSet2.xsd" xmlns:mstns="http://tempuri.org/quizAppDataSet2.xsd" xmlns="http://tempuri.org/quizAppDataSet2.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="quizAppConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="quizAppConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Quiz_App.Properties.Settings.GlobalReference.Default.quizAppConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="student_recordTableAdapter" GeneratorDataComponentClassName="student_recordTableAdapter" Name="student_record" UserDataComponentName="student_recordTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="quizAppConnectionString (Settings)" DbObjectName="quizApp.dbo.student_record" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT std_batch_code FROM dbo.student_record</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="std_batch_code" DataSetColumn="std_batch_code" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="quizAppDataSet2" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="quizAppDataSet2" msprop:Generator_UserDSName="quizAppDataSet2">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="student_record" msprop:Generator_TableClassName="student_recordDataTable" msprop:Generator_TableVarName="tablestudent_record" msprop:Generator_TablePropName="student_record" msprop:Generator_RowDeletingName="student_recordRowDeleting" msprop:Generator_RowChangingName="student_recordRowChanging" msprop:Generator_RowEvHandlerName="student_recordRowChangeEventHandler" msprop:Generator_RowDeletedName="student_recordRowDeleted" msprop:Generator_UserTableName="student_record" msprop:Generator_RowChangedName="student_recordRowChanged" msprop:Generator_RowEvArgName="student_recordRowChangeEvent" msprop:Generator_RowClassName="student_recordRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="std_batch_code" msprop:Generator_ColumnVarNameInTable="columnstd_batch_code" msprop:Generator_ColumnPropNameInRow="std_batch_code" msprop:Generator_ColumnPropNameInTable="std_batch_codeColumn" msprop:Generator_UserColumnName="std_batch_code">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

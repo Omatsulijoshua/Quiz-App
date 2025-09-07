@@ -1,0 +1,906 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{219F0E6A-6561-4411-825A-785814DCD43E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Quiz_App</RootNamespace>
+    <AssemblyName>Quiz App</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML, Version=0.105.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.105.0\lib\netstandard2.0\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.Parser.2.0.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.3.1.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=8.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.8.0.5\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.8.0.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.7.0\lib\net462\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.7.0\lib\net462\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.barcodes, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.barcodes.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.bouncy-castle-connector, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.bouncy-castle-connector.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.commons, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.commons.9.2.0\lib\net461\itext.commons.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.forms, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.forms.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.io, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.io.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.kernel, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.layout, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.layout.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.pdfa, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.pdfua, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.pdfua.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.sign, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.sign.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.styledxmlparser, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.styledxmlparser.dll</HintPath>
+    </Reference>
+    <Reference Include="itext.svg, Version=9.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext.9.2.0\lib\net461\itext.svg.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.5.0.0\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.5.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.5.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="RBush, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c77e27b81f4d0187, processorArchitecture=MSIL">
+      <HintPath>..\packages\RBush.Signed.4.0.0\lib\net47\RBush.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
+      <HintPath>..\packages\SixLabors.Fonts.1.0.0\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.8.0.2\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=9.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.9.0.5\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="add_courses.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="add_courses.Designer.cs">
+      <DependentUpon>add_courses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="add_question.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="add_question.Designer.cs">
+      <DependentUpon>add_question.cs</DependentUpon>
+    </Compile>
+    <Compile Include="add_short_answer_questions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="add_short_answer_questions.Designer.cs">
+      <DependentUpon>add_short_answer_questions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="add_student.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="add_student.Designer.cs">
+      <DependentUpon>add_student.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Admin_Logincs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Admin_Logincs.Designer.cs">
+      <DependentUpon>Admin_Logincs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app_settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="app_settings.Designer.cs">
+      <DependentUpon>app_settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="calculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="calculator.Designer.cs">
+      <DependentUpon>calculator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="connection_class.cs" />
+    <Compile Include="Exam_Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exam_Settings.Designer.cs">
+      <DependentUpon>Exam_Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exam_Shuffle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exam_Shuffle.Designer.cs">
+      <DependentUpon>Exam_Shuffle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form3.Designer.cs">
+      <DependentUpon>Form3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form4.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form4.Designer.cs">
+      <DependentUpon>Form4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GPA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GPA.Designer.cs">
+      <DependentUpon>GPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="make_subscription.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="make_subscription.Designer.cs">
+      <DependentUpon>make_subscription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterSheetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterSheetForm.Designer.cs">
+      <DependentUpon>MasterSheetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="pas_question_view2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="pas_question_view2.Designer.cs">
+      <DependentUpon>pas_question_view2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="question_type.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="question_type.Designer.cs">
+      <DependentUpon>question_type.cs</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet7.cs">
+      <DependentUpon>quizAppDataSet7.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="set_course_credit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="set_course_credit.Designer.cs">
+      <DependentUpon>set_course_credit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="single_GPA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="single_GPA.Designer.cs">
+      <DependentUpon>single_GPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="multi_GPA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="multi_GPA.Designer.cs">
+      <DependentUpon>multi_GPA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterSheetsSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterSheetsSelect.Designer.cs">
+      <DependentUpon>MasterSheetsSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="mastersheet_mode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mastersheet_mode.Designer.cs">
+      <DependentUpon>mastersheet_mode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="messageform2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="messageform2.Designer.cs">
+      <DependentUpon>messageform2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="past_questions_settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="past_questions_settings.Designer.cs">
+      <DependentUpon>past_questions_settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="past_questions_view.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="past_questions_view.Designer.cs">
+      <DependentUpon>past_questions_view.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportCardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportCardForm.Designer.cs">
+      <DependentUpon>ReportCardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportCardPrintcs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportCardPrintcs.Designer.cs">
+      <DependentUpon>ReportCardPrintcs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="select _pastquestions_settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="select _pastquestions_settings.Designer.cs">
+      <DependentUpon>select _pastquestions_settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Set_Exam_Duration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Set_Exam_Duration.Designer.cs">
+      <DependentUpon>Set_Exam_Duration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="add_admin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="add_admin.Designer.cs">
+      <DependentUpon>add_admin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenerateResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GenerateResult.Designer.cs">
+      <DependentUpon>GenerateResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Home.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Home.Designer.cs">
+      <DependentUpon>Home.cs</DependentUpon>
+    </Compile>
+    <Compile Include="insertclass.cs" />
+    <Compile Include="messageform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="messageform.Designer.cs">
+      <DependentUpon>messageform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Print_Screen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Print_Screen.Designer.cs">
+      <DependentUpon>Print_Screen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="questions.cs" />
+    <Compile Include="quizAppDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet10.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet10.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet11.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet11.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet12.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet12.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet13.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet13.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet14.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet14.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet2.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet3.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet3.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet4.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet4.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet5.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet5.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet6.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet6.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet7.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet7.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet8.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet8.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="quizAppDataSet9.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>quizAppDataSet9.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="return_class.cs" />
+    <Compile Include="setexam.cs" />
+    <Compile Include="Setexams.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setexams.Designer.cs">
+      <DependentUpon>Setexams.cs</DependentUpon>
+    </Compile>
+    <Compile Include="set_exam_question_number.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="set_exam_question_number.Designer.cs">
+      <DependentUpon>set_exam_question_number.cs</DependentUpon>
+    </Compile>
+    <Compile Include="show_calculator_scorecs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="show_calculator_scorecs.Designer.cs">
+      <DependentUpon>show_calculator_scorecs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="show_result.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="show_result.Designer.cs">
+      <DependentUpon>show_result.cs</DependentUpon>
+    </Compile>
+    <Compile Include="studentlogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="studentlogin.Designer.cs">
+      <DependentUpon>studentlogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="studentlogin2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="studentlogin2.Designer.cs">
+      <DependentUpon>studentlogin2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="student_control_panel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="student_control_panel.Designer.cs">
+      <DependentUpon>student_control_panel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="subscription_history.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="subscription_history.Designer.cs">
+      <DependentUpon>subscription_history.cs</DependentUpon>
+    </Compile>
+    <Compile Include="subscription_select.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="subscription_select.Designer.cs">
+      <DependentUpon>subscription_select.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Test.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test.Designer.cs">
+      <DependentUpon>Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Test2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test2.Designer.cs">
+      <DependentUpon>Test2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="viewclass.cs" />
+    <Compile Include="view_scores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view_scores.Designer.cs">
+      <DependentUpon>view_scores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Welcome.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Welcome.Designer.cs">
+      <DependentUpon>Welcome.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="add_admin.resx">
+      <DependentUpon>add_admin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="add_courses.resx">
+      <DependentUpon>add_courses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="add_question.resx">
+      <DependentUpon>add_question.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="add_short_answer_questions.resx">
+      <DependentUpon>add_short_answer_questions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="add_student.resx">
+      <DependentUpon>add_student.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Admin_Logincs.resx">
+      <DependentUpon>Admin_Logincs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app_settings.resx">
+      <DependentUpon>app_settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="calculator.resx">
+      <DependentUpon>calculator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exam_Settings.resx">
+      <DependentUpon>Exam_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exam_Shuffle.resx">
+      <DependentUpon>Exam_Shuffle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form3.resx">
+      <DependentUpon>Form3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form4.resx">
+      <DependentUpon>Form4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenerateResult.resx">
+      <DependentUpon>GenerateResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GPA.resx">
+      <DependentUpon>GPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Home.resx">
+      <DependentUpon>Home.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="make_subscription.resx">
+      <DependentUpon>make_subscription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterSheetForm.resx">
+      <DependentUpon>MasterSheetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pas_question_view2.resx">
+      <DependentUpon>pas_question_view2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="question_type.resx">
+      <DependentUpon>question_type.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="set_course_credit.resx">
+      <DependentUpon>set_course_credit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="single_GPA.resx">
+      <DependentUpon>single_GPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterSheetsSelect.resx">
+      <DependentUpon>MasterSheetsSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="mastersheet_mode.resx">
+      <DependentUpon>mastersheet_mode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="messageform.resx">
+      <DependentUpon>messageform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="messageform2.resx">
+      <DependentUpon>messageform2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="multi_GPA.resx">
+      <DependentUpon>multi_GPA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="past_questions_settings.resx">
+      <DependentUpon>past_questions_settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="past_questions_view.resx">
+      <DependentUpon>past_questions_view.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Print_Screen.resx">
+      <DependentUpon>Print_Screen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ReportCardForm.resx">
+      <DependentUpon>ReportCardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportCardPrintcs.resx">
+      <DependentUpon>ReportCardPrintcs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="select _pastquestions_settings.resx">
+      <DependentUpon>select _pastquestions_settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setexams.resx">
+      <DependentUpon>Setexams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Set_Exam_Duration.resx">
+      <DependentUpon>Set_Exam_Duration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="set_exam_question_number.resx">
+      <DependentUpon>set_exam_question_number.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="show_calculator_scorecs.resx">
+      <DependentUpon>show_calculator_scorecs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="show_result.resx">
+      <DependentUpon>show_result.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="studentlogin.resx">
+      <DependentUpon>studentlogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="studentlogin2.resx">
+      <DependentUpon>studentlogin2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="student_control_panel.resx">
+      <DependentUpon>student_control_panel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="subscription_history.resx">
+      <DependentUpon>subscription_history.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="subscription_select.resx">
+      <DependentUpon>subscription_select.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Test.resx">
+      <DependentUpon>Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Test2.resx">
+      <DependentUpon>Test2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="view_scores.resx">
+      <DependentUpon>view_scores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Welcome.resx">
+      <DependentUpon>Welcome.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="quizAppDataSet.xsc">
+      <DependentUpon>quizAppDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet.xss">
+      <DependentUpon>quizAppDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet1.xsc">
+      <DependentUpon>quizAppDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet1.xss">
+      <DependentUpon>quizAppDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet10.xsc">
+      <DependentUpon>quizAppDataSet10.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet10.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet10.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet10.xss">
+      <DependentUpon>quizAppDataSet10.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet11.xsc">
+      <DependentUpon>quizAppDataSet11.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet11.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet11.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet11.xss">
+      <DependentUpon>quizAppDataSet11.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet12.xsc">
+      <DependentUpon>quizAppDataSet12.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet12.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet12.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet12.xss">
+      <DependentUpon>quizAppDataSet12.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet13.xsc">
+      <DependentUpon>quizAppDataSet13.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet13.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet13.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet13.xss">
+      <DependentUpon>quizAppDataSet13.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet14.xsc">
+      <DependentUpon>quizAppDataSet14.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet14.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet14.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet14.xss">
+      <DependentUpon>quizAppDataSet14.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet2.xsc">
+      <DependentUpon>quizAppDataSet2.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet2.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet2.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet2.xss">
+      <DependentUpon>quizAppDataSet2.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet3.xsc">
+      <DependentUpon>quizAppDataSet3.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet3.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet3.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet3.xss">
+      <DependentUpon>quizAppDataSet3.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet4.xsc">
+      <DependentUpon>quizAppDataSet4.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet4.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet4.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet4.xss">
+      <DependentUpon>quizAppDataSet4.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet5.xsc">
+      <DependentUpon>quizAppDataSet5.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet5.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet5.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet5.xss">
+      <DependentUpon>quizAppDataSet5.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet6.xsc">
+      <DependentUpon>quizAppDataSet6.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet6.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet6.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet6.xss">
+      <DependentUpon>quizAppDataSet6.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet7.xsc">
+      <DependentUpon>quizAppDataSet7.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet7.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet7.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet7.xss">
+      <DependentUpon>quizAppDataSet7.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet8.xsc">
+      <DependentUpon>quizAppDataSet8.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet8.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet8.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet8.xss">
+      <DependentUpon>quizAppDataSet8.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet9.xsc">
+      <DependentUpon>quizAppDataSet9.xsd</DependentUpon>
+    </None>
+    <None Include="quizAppDataSet9.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>quizAppDataSet9.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="quizAppDataSet9.xss">
+      <DependentUpon>quizAppDataSet9.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Screenshot 2024-02-23 134843.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Screenshot 2025-06-06 182452.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
