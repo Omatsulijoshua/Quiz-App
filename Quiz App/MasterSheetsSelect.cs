@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,15 +11,43 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class MasterSheetsSelect : Form
+    public partial class MasterSheetsSelect : BaseForm
     {
         public MasterSheetsSelect()
         {
             InitializeComponent();
         }
 
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void MasterSheetsSelect_Load(object sender, EventArgs e)
         {
+            MasterSheetsSelect.ScaleForm(this);
+            
             using (SqlConnection con = connection_class.GetConnection())
             {
                 string query = "SELECT DISTINCT std_batch_code FROM student_record";
@@ -46,7 +74,7 @@ namespace Quiz_App
 
             viewclass vc = new viewclass(query);
             dataGridView1.DataSource = vc.showrecord();
-            StyleDataGridView1(); // Apply style after data binding
+            ModernUi.StyleDataGridView(dataGridView1);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -63,19 +91,6 @@ namespace Quiz_App
             }
         }
 
-        private void StyleDataGridView1()
-        {
-            dataGridView1.BackgroundColor = Color.LightYellow;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
-            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            dataGridView1.DefaultCellStyle.BackColor = Color.LightCyan;
-            dataGridView1.DefaultCellStyle.ForeColor = Color.DarkBlue;
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-            dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.ClearSelection();
-        }
-
         private void pictureBox8_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -89,3 +104,4 @@ namespace Quiz_App
         }
     }
 }
+

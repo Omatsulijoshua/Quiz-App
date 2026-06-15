@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,16 +19,19 @@ using OfficeOpenXml.Style;
 
 namespace Quiz_App
 {
-    public partial class add_student : Form
+    public partial class add_student : BaseForm
     {
         public static string fk_ad;
+        private Panel editorCard;
+        private Panel searchCard;
+        private Panel gridCard;
+        private Panel resultsCard;
 
 
         public add_student()
         {
             InitializeComponent();
         }
-
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -110,16 +113,7 @@ namespace Quiz_App
               //  }
 
 
-                // Then your color settings:
-                dataGridView1.BackgroundColor = Color.LightYellow;
-                dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
-                dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                dataGridView1.DefaultCellStyle.BackColor = Color.LightCyan;
-                dataGridView1.DefaultCellStyle.ForeColor = Color.DarkBlue;
-                dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-                dataGridView1.EnableHeadersVisualStyles = false;
-
+                ModernUi.StyleDataGridView(dataGridView1);
                 dataGridView1.ClearSelection();
             }
         }
@@ -127,15 +121,163 @@ namespace Quiz_App
 
         private void add_student_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;   // remove close/min/max buttons
+            this.WindowState = FormWindowState.Maximized;  // maximize to fill screen
+            this.TopMost = false;
+
+            ModernUi.ScaleForScreen(this);
+            BuildStudentManagementLayout();
             // TODO: This line of code loads data into the 'quizAppDataSet6.student_record' table. You can move, or remove it, as needed.
-            this.student_recordTableAdapter2.Fill(this.quizAppDataSet6.student_record);
+            //this.student_recordTableAdapter2.Fill(this.quizAppDataSet6.student_record);
             BindData();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = true;
             dataGridView1.ReadOnly = true; // Optional: prevents accidental edits
             dataGridView1.AllowUserToAddRows = false; // Cleaner display
+            ModernUi.StyleDataGridView(dataGridView1);
+            ModernUi.StyleDataGridView(dataGridView2);
 
 
+        }
+
+        private void BuildStudentManagementLayout()
+        {
+            BackColor = Color.FromArgb(9, 15, 29);
+
+            if (editorCard == null)
+            {
+                editorCard = ModernUi.CreateCard(new Rectangle(28, 78, 590, 328));
+                searchCard = ModernUi.CreateCard(new Rectangle(28, 430, 590, 220));
+                gridCard = ModernUi.CreateCard(new Rectangle(648, 78, 860, 380));
+                resultsCard = ModernUi.CreateCard(new Rectangle(648, 484, 860, 438));
+
+                Controls.Add(editorCard);
+                Controls.Add(searchCard);
+                Controls.Add(gridCard);
+                Controls.Add(resultsCard);
+
+                editorCard.SendToBack();
+                searchCard.SendToBack();
+                gridCard.SendToBack();
+                resultsCard.SendToBack();
+            }
+
+            label5.Text = "Student Management";
+            label5.ForeColor = ModernUi.Ink;
+            label5.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold, GraphicsUnit.Point);
+            label5.Location = new Point(32, 20);
+            label5.AutoSize = true;
+            label5.BringToFront();
+
+            ConfigureEditorCard();
+            ConfigureSearchCard();
+            ConfigureGridCards();
+        }
+
+        private void ConfigureEditorCard()
+        {
+            AttachLabeledInput(editorCard, label2, textBox1, "Student Name", 26, 34);
+            AttachLabeledInput(editorCard, label3, textBox2, "Batch / Class", 26, 122);
+            AttachLabeledInput(editorCard, label4, textBox3, "Password", 26, 210);
+            textBox3.UseSystemPasswordChar = true;
+
+            ConfigureActionButton(button1, editorCard, "Add Student", new Rectangle(26, 270, 146, 44), true);
+            ConfigureActionButton(button3, editorCard, "Import Excel", new Rectangle(182, 270, 146, 44), false);
+            ConfigureActionButton(button5, editorCard, "Delete By Name", new Rectangle(338, 270, 146, 44), false);
+            ConfigureActionButton(button2, editorCard, "Delete Selected", new Rectangle(26, 318, 220, 44), false);
+
+            button4.Parent = editorCard;
+            button4.BackColor = Color.Transparent;
+            button4.ForeColor = ModernUi.AccentAlt;
+            button4.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            button4.Text = "Download sample file for bulk student import";
+            button4.Location = new Point(258, 330);
+            button4.Size = new Size(300, 24);
+        }
+
+        private void ConfigureSearchCard()
+        {
+            AttachLabeledInput(searchCard, label1, textBox4, "Search by student name", 26, 30);
+            AttachLabeledInput(searchCard, label6, textBox5, "Search by student ID", 26, 116);
+
+            ConfigureActionButton(btnClearImage, searchCard, "Run Search", new Rectangle(26, 166, 140, 40), true);
+            ConfigureActionButton(button6, searchCard, "Export Search", new Rectangle(176, 166, 140, 40), false);
+            ConfigureActionButton(button7, searchCard, "Export All", new Rectangle(326, 166, 120, 40), false);
+            ConfigureActionButton(button8, searchCard, "Update Selected", new Rectangle(456, 166, 120, 40), false);
+        }
+
+        private void ConfigureGridCards()
+        {
+            dataGridView1.Parent = gridCard;
+            dataGridView1.Location = new Point(18, 50);
+            dataGridView1.Size = new Size(824, 310);
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            dataGridView2.Parent = resultsCard;
+            dataGridView2.Location = new Point(18, 50);
+            dataGridView2.Size = new Size(824, 390);
+            dataGridView2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            Label primary = EnsureCardTitle(gridCard, "All Students");
+            primary.Location = new Point(18, 16);
+
+            Label secondary = EnsureCardTitle(resultsCard, "Search Results");
+            secondary.Location = new Point(18, 16);
+        }
+
+        private void AttachLabeledInput(Panel parent, Label label, TextBox textBox, string text, int left, int top)
+        {
+            label.Parent = parent;
+            label.BackColor = Color.Transparent;
+            label.ForeColor = ModernUi.Ink;
+            label.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            label.Text = text;
+            label.Location = new Point(left, top);
+            label.AutoSize = true;
+
+            textBox.Parent = parent;
+            ModernUi.StyleTextInput(textBox);
+            textBox.Location = new Point(left, top + 30);
+            textBox.Size = new Size(parent.Width - (left * 2), 34);
+        }
+
+        private void ConfigureActionButton(Button button, Panel parent, string text, Rectangle bounds, bool primary)
+        {
+            button.Parent = parent;
+            if (primary)
+            {
+                ModernUi.StylePrimaryButton(button);
+            }
+            else
+            {
+                ModernUi.StyleSecondaryButton(button);
+            }
+
+            button.Text = text;
+            button.Bounds = bounds;
+        }
+
+        private Label EnsureCardTitle(Panel panel, string text)
+        {
+            Label label = panel.Controls.OfType<Label>().FirstOrDefault(existing => Convert.ToString(existing.Tag) == "card-title");
+            if (label == null)
+            {
+                label = ModernUi.CreateLabel(
+                    text,
+                    new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point),
+                    ModernUi.Ink,
+                    new Point(18, 16),
+                    new Size(220, 28),
+                    ContentAlignment.MiddleLeft);
+                label.Tag = "card-title";
+                panel.Controls.Add(label);
+            }
+            else
+            {
+                label.Text = text;
+            }
+
+            return label;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -189,7 +331,7 @@ namespace Quiz_App
                         transaction.Commit();
                         MessageBox.Show("Selected student(s) deleted successfully.");
 
-                        // ✅ Refresh DataGridView manually after deletion
+                        // ? Refresh DataGridView manually after deletion
                         using (SqlCommand cmd = new SqlCommand("SELECT * FROM student_record", conn))
                         using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                         {
@@ -399,19 +541,7 @@ namespace Quiz_App
 
                     dataGridView2.DataSource = dt;
 
-                    // ✅ Copy styling from DataGridView1 to DataGridView2
-                    dataGridView2.BackgroundColor = dataGridView1.BackgroundColor;
-                    dataGridView2.DefaultCellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-                    dataGridView2.DefaultCellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
-                    dataGridView2.DefaultCellStyle.SelectionBackColor = dataGridView1.DefaultCellStyle.SelectionBackColor;
-                    dataGridView2.DefaultCellStyle.SelectionForeColor = dataGridView1.DefaultCellStyle.SelectionForeColor;
-
-                    dataGridView2.AlternatingRowsDefaultCellStyle.BackColor = dataGridView1.AlternatingRowsDefaultCellStyle.BackColor;
-                    dataGridView2.AlternatingRowsDefaultCellStyle.ForeColor = dataGridView1.AlternatingRowsDefaultCellStyle.ForeColor;
-
-                    dataGridView2.ColumnHeadersDefaultCellStyle.BackColor = dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
-                    dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor;
-                    dataGridView2.EnableHeadersVisualStyles = false; // make sure header colors apply
+                    ModernUi.StyleDataGridView(dataGridView2);
                 }
 
                 con.Close();
@@ -542,7 +672,7 @@ namespace Quiz_App
                 return;
             }
 
-            // ✅ Use index instead of column name
+            // ? Use index instead of column name
             int studentId = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells[0].Value);
 
             string newName = textBox1.Text.Trim();
@@ -630,4 +760,5 @@ namespace Quiz_App
 
 
    
+
 

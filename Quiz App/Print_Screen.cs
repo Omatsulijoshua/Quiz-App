@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,7 +12,7 @@ using System.Drawing.Printing;
 
 namespace Quiz_App
 {
-    public partial class Print_Screen : Form
+    public partial class Print_Screen : BaseForm
     {
         public string ScoreID { get; set; } = "";
         public string score { get; set; } = "";
@@ -28,6 +28,31 @@ namespace Quiz_App
             InitializeComponent();
         }
 
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         // Method to receive external score data (from other form)
         public void UpdateData(string scoreID, string score, string percentage)
         {
@@ -39,6 +64,7 @@ namespace Quiz_App
 
         private void Print_Screen_Load(object sender, EventArgs e)
         {
+            Print_Screen.ScaleForm(this);
             // If external data was provided
             if (isExternalData)
             {
@@ -134,3 +160,4 @@ namespace Quiz_App
         }
     }
 }
+

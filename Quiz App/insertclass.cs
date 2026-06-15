@@ -176,6 +176,77 @@ namespace Quiz_App
         }
 
 
+
+        public void UpsertTheoryDuration(int examId, int theoryDuration)
+        {
+            using (SqlConnection con = connection_class.GetConnection())
+            {
+                con.Open();
+
+                string theoryColumn = ResolveTheoryDurationColumn(con);
+                if (string.IsNullOrWhiteSpace(theoryColumn))
+                {
+                    using (SqlCommand ensureCmd = new SqlCommand(
+                        "IF OBJECT_ID(N'dbo.tbl_exam_settings', N'U') IS NOT NULL AND COL_LENGTH(N'dbo.tbl_exam_settings', N'theory_duration_minutes') IS NULL ALTER TABLE dbo.tbl_exam_settings ADD theory_duration_minutes INT NULL;",
+                        con))
+                    {
+                        ensureCmd.ExecuteNonQuery();
+                    }
+
+                    theoryColumn = ResolveTheoryDurationColumn(con);
+                    if (string.IsNullOrWhiteSpace(theoryColumn))
+                    {
+                        throw new InvalidOperationException("Theory duration column was not found in tbl_exam_settings.");
+                    }
+                }
+
+                string query = @"
+        IF EXISTS (SELECT 1 FROM tbl_exam_settings WHERE ex_id = @examId)
+            UPDATE tbl_exam_settings
+            SET " + theoryColumn + @" = @theoryDuration
+            WHERE ex_id = @examId;
+        ELSE
+            INSERT INTO tbl_exam_settings (ex_id, " + theoryColumn + @")
+            VALUES (@examId, @theoryDuration);";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@examId", examId);
+                    cmd.Parameters.AddWithValue("@theoryDuration", theoryDuration);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private string ResolveTheoryDurationColumn(SqlConnection connection)
+        {
+            if (ColumnExists(connection, "tbl_exam_settings", "theory_duration_minutes"))
+            {
+                return "theory_duration_minutes";
+            }
+
+            if (ColumnExists(connection, "tbl_exam_settings", "theory_duration"))
+            {
+                return "theory_duration";
+            }
+
+            return null;
+        }
+
+        private bool ColumnExists(SqlConnection connection, string tableName, string columnName)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table AND COLUMN_NAME = @column",
+                connection))
+            {
+                cmd.Parameters.AddWithValue("@table", tableName);
+                cmd.Parameters.AddWithValue("@column", columnName);
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
+
+
     }
 
 

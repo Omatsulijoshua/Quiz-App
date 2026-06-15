@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,15 +11,42 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class set_course_credit : Form
+    public partial class set_course_credit : BaseForm
     {
         public set_course_credit()
         {
             InitializeComponent();
         }
 
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void set_course_credit_Load(object sender, EventArgs e)
         {
+            set_course_credit.ScaleForm(this);
             LoadCourses();
             LoadDataGridView();
         }
@@ -30,7 +57,7 @@ namespace Quiz_App
             {
                 conn.Open();
 
-                // ✅ Fetch exams in alphabetical order
+                // ? Fetch exams in alphabetical order
                 string query = "SELECT ex_id, ex_name FROM tbl_exams ORDER BY ex_name ASC";
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
@@ -53,7 +80,7 @@ namespace Quiz_App
             {
                 conn.Open();
 
-                // ✅ Order exams alphabetically
+                // ? Order exams alphabetically
                 string query = @"
             SELECT e.ex_id, e.ex_name, s.unit
             FROM tbl_exams e
@@ -112,8 +139,8 @@ namespace Quiz_App
 
                     MessageBox.Show("Course unit saved successfully!");
 
-                    // Refresh DataGridView to show updated values
-                    LoadDataGrid();
+                    // ? Refresh the DataGridView instead of the ComboBox
+                    LoadDataGridView();
                 }
             }
             catch (Exception ex)
@@ -156,7 +183,7 @@ namespace Quiz_App
             {
                 conn.Open();
 
-                // ✅ Fetch exams in alphabetical order
+                // ? Fetch exams in alphabetical order
                 string query = "SELECT ex_id, ex_name FROM tbl_exams ORDER BY ex_name ASC";
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();

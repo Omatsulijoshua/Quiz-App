@@ -30,9 +30,6 @@ namespace Quiz_App
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(add_question));
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.quesidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.qtitleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -85,8 +82,6 @@ namespace Quiz_App
             this.btnClearImage = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.panelMCQ = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tblexamsBindingSource)).BeginInit();
@@ -99,30 +94,6 @@ namespace Quiz_App
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQuestion)).BeginInit();
             this.panelMCQ.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(9, 11);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(44, 47);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox4.TabIndex = 5;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(1528, 12);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(56, 55);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox3.TabIndex = 6;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
             // 
             // dataGridView1
             // 
@@ -141,7 +112,7 @@ namespace Quiz_App
             this.exidfkDataGridViewTextBoxColumn});
             this.dataGridView1.Location = new System.Drawing.Point(9, 635);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(944, 273);
+            this.dataGridView1.Size = new System.Drawing.Size(1044, 221);
             this.dataGridView1.TabIndex = 8;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
@@ -239,7 +210,7 @@ namespace Quiz_App
             this.btnDownloadSample.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDownloadSample.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDownloadSample.ForeColor = System.Drawing.Color.White;
-            this.btnDownloadSample.Location = new System.Drawing.Point(1243, 886);
+            this.btnDownloadSample.Location = new System.Drawing.Point(1096, 846);
             this.btnDownloadSample.Name = "btnDownloadSample";
             this.btnDownloadSample.Size = new System.Drawing.Size(335, 25);
             this.btnDownloadSample.TabIndex = 29;
@@ -292,7 +263,7 @@ namespace Quiz_App
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(177, 29);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(1389, 38);
+            this.textBox1.Size = new System.Drawing.Size(728, 38);
             this.textBox1.TabIndex = 0;
             // 
             // textBox2
@@ -300,7 +271,7 @@ namespace Quiz_App
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox2.Location = new System.Drawing.Point(177, 85);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(862, 38);
+            this.textBox2.Size = new System.Drawing.Size(728, 38);
             this.textBox2.TabIndex = 1;
             // 
             // textBox3
@@ -308,7 +279,7 @@ namespace Quiz_App
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.Location = new System.Drawing.Point(177, 144);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(862, 38);
+            this.textBox3.Size = new System.Drawing.Size(728, 38);
             this.textBox3.TabIndex = 1;
             // 
             // textBox4
@@ -316,7 +287,7 @@ namespace Quiz_App
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox4.Location = new System.Drawing.Point(177, 199);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(862, 38);
+            this.textBox4.Size = new System.Drawing.Size(728, 38);
             this.textBox4.TabIndex = 1;
             // 
             // textBox5
@@ -324,7 +295,7 @@ namespace Quiz_App
             this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox5.Location = new System.Drawing.Point(177, 256);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(862, 38);
+            this.textBox5.Size = new System.Drawing.Size(728, 38);
             this.textBox5.TabIndex = 1;
             // 
             // textBox6
@@ -332,7 +303,7 @@ namespace Quiz_App
             this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox6.Location = new System.Drawing.Point(177, 314);
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(862, 38);
+            this.textBox6.Size = new System.Drawing.Size(728, 38);
             this.textBox6.TabIndex = 1;
             // 
             // label1
@@ -373,7 +344,7 @@ namespace Quiz_App
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(1056, 94);
+            this.label7.Location = new System.Drawing.Point(994, 46);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 24);
             this.label7.TabIndex = 2;
@@ -384,7 +355,7 @@ namespace Quiz_App
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(1147, 147);
+            this.label8.Location = new System.Drawing.Point(1085, 99);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 24);
             this.label8.TabIndex = 2;
@@ -437,9 +408,9 @@ namespace Quiz_App
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
-            this.button1.Location = new System.Drawing.Point(1134, 196);
+            this.button1.Location = new System.Drawing.Point(1072, 148);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(201, 53);
+            this.button1.Size = new System.Drawing.Size(161, 53);
             this.button1.TabIndex = 3;
             this.button1.Text = "Add Question";
             this.button1.UseVisualStyleBackColor = false;
@@ -451,9 +422,9 @@ namespace Quiz_App
             this.comboBox1.DisplayMember = "ex_name";
             this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(1121, 84);
+            this.comboBox1.Location = new System.Drawing.Point(1059, 36);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(445, 39);
+            this.comboBox1.Size = new System.Drawing.Size(332, 39);
             this.comboBox1.TabIndex = 4;
             this.comboBox1.ValueMember = "ex_id";
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
@@ -462,9 +433,9 @@ namespace Quiz_App
             // 
             this.btnImportQuestions_Click.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.btnImportQuestions_Click.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportQuestions_Click.Location = new System.Drawing.Point(1148, 679);
+            this.btnImportQuestions_Click.Location = new System.Drawing.Point(1071, 639);
             this.btnImportQuestions_Click.Name = "btnImportQuestions_Click";
-            this.btnImportQuestions_Click.Size = new System.Drawing.Size(201, 49);
+            this.btnImportQuestions_Click.Size = new System.Drawing.Size(203, 49);
             this.btnImportQuestions_Click.TabIndex = 26;
             this.btnImportQuestions_Click.Text = "Add With Excell";
             this.btnImportQuestions_Click.UseVisualStyleBackColor = false;
@@ -473,9 +444,9 @@ namespace Quiz_App
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
-            this.button3.Location = new System.Drawing.Point(1383, 199);
+            this.button3.Location = new System.Drawing.Point(1258, 152);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(173, 49);
+            this.button3.Size = new System.Drawing.Size(133, 49);
             this.button3.TabIndex = 5;
             this.button3.Text = "Delete With Question";
             this.button3.UseVisualStyleBackColor = false;
@@ -484,9 +455,9 @@ namespace Quiz_App
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
-            this.button2.Location = new System.Drawing.Point(1398, 675);
+            this.button2.Location = new System.Drawing.Point(1322, 638);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(180, 53);
+            this.button2.Size = new System.Drawing.Size(165, 53);
             this.button2.TabIndex = 5;
             this.button2.Text = "Delete Multipe Questions";
             this.button2.UseVisualStyleBackColor = false;
@@ -497,7 +468,7 @@ namespace Quiz_App
             this.pictureBoxQuestion.BackColor = System.Drawing.Color.White;
             this.pictureBoxQuestion.Location = new System.Drawing.Point(177, 374);
             this.pictureBoxQuestion.Name = "pictureBoxQuestion";
-            this.pictureBoxQuestion.Size = new System.Drawing.Size(321, 173);
+            this.pictureBoxQuestion.Size = new System.Drawing.Size(402, 173);
             this.pictureBoxQuestion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxQuestion.TabIndex = 6;
             this.pictureBoxQuestion.TabStop = false;
@@ -506,7 +477,7 @@ namespace Quiz_App
             // 
             this.btnBrowseImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.btnBrowseImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBrowseImage.Location = new System.Drawing.Point(528, 374);
+            this.btnBrowseImage.Location = new System.Drawing.Point(671, 374);
             this.btnBrowseImage.Name = "btnBrowseImage";
             this.btnBrowseImage.Size = new System.Drawing.Size(168, 44);
             this.btnBrowseImage.TabIndex = 7;
@@ -518,7 +489,7 @@ namespace Quiz_App
             // 
             this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(1148, 809);
+            this.button4.Location = new System.Drawing.Point(1071, 797);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(203, 45);
             this.button4.TabIndex = 30;
@@ -530,7 +501,7 @@ namespace Quiz_App
             // 
             this.button6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(1413, 808);
+            this.button6.Location = new System.Drawing.Point(1322, 797);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(165, 46);
             this.button6.TabIndex = 35;
@@ -542,7 +513,7 @@ namespace Quiz_App
             // 
             this.btnClearImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.btnClearImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearImage.Location = new System.Drawing.Point(528, 503);
+            this.btnClearImage.Location = new System.Drawing.Point(671, 503);
             this.btnClearImage.Name = "btnClearImage";
             this.btnClearImage.Size = new System.Drawing.Size(171, 44);
             this.btnClearImage.TabIndex = 7;
@@ -554,9 +525,9 @@ namespace Quiz_App
             // 
             this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(1384, 503);
+            this.button5.Location = new System.Drawing.Point(1090, 484);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(172, 41);
+            this.button5.Size = new System.Drawing.Size(132, 41);
             this.button5.TabIndex = 36;
             this.button5.Text = "Update Question\r\n";
             this.button5.UseVisualStyleBackColor = false;
@@ -587,27 +558,24 @@ namespace Quiz_App
             this.panelMCQ.Controls.Add(this.textBox2);
             this.panelMCQ.Controls.Add(this.textBox1);
             this.panelMCQ.ForeColor = System.Drawing.Color.White;
-            this.panelMCQ.Location = new System.Drawing.Point(6, 70);
+            this.panelMCQ.Location = new System.Drawing.Point(12, 76);
             this.panelMCQ.Name = "panelMCQ";
-            this.panelMCQ.Size = new System.Drawing.Size(1572, 553);
+            this.panelMCQ.Size = new System.Drawing.Size(1475, 553);
             this.panelMCQ.TabIndex = 0;
             this.panelMCQ.TabStop = false;
             this.panelMCQ.Text = "Adding Questions";
-         //   this.panelMCQ.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // add_question
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(1620, 920);
+            this.ClientSize = new System.Drawing.Size(1531, 999);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.btnDownloadSample);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.pictureBox4);
-            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.panelMCQ);
             this.Controls.Add(this.btnImportQuestions_Click);
@@ -616,8 +584,6 @@ namespace Quiz_App
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "add_question";
             this.Load += new System.EventHandler(this.add_question_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tblexamsBindingSource)).EndInit();
@@ -636,8 +602,6 @@ namespace Quiz_App
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DataGridViewTextBoxColumn quesidDataGridViewTextBoxColumn;

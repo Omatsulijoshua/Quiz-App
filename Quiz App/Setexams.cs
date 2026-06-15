@@ -1,4 +1,4 @@
-﻿    using System;
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Data;
@@ -16,57 +16,202 @@
 
     namespace Quiz_App
     {
-        public partial class Setexams : Form
+        public partial class Setexams : BaseForm
         {
-            public Setexams()
-            {
-                InitializeComponent();
-            }
+                public Setexams()
+                {
+                    InitializeComponent();
+                }
             //OpenFileDialog ofd = new OpenFileDialog();
 
+            private const int BaseWidth = 1920;
+            private const int BaseHeight = 1080;
 
-            private void Setexams_Load(object sender, EventArgs e)
+            public static void ScaleForm(Form form)
             {
-                // TODO: This line of code loads data into the 'quizAppDataSet9.set_exam' table. You can move, or remove it, as needed.
-                this.set_examTableAdapter.Fill(this.quizAppDataSet9.set_exam);
+                // Get current screen resolution
+                int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+                int screenHeight = Screen.PrimaryScreen.Bounds.Height;
 
-                string q = "select * from student_record";
-                viewclass vc = new viewclass(q);
+                // Calculate scale factors
+                float scaleX = (float)screenWidth / BaseWidth;
+                float scaleY = (float)screenHeight / BaseHeight;
 
-                dataGridView1.DataSource = vc.showrecord();
+                // Apply scaling to form and controls
+                form.Scale(new SizeF(scaleX, scaleY));
 
-                // ✅ Fill Batch Code ComboBox
-                SqlDataAdapter dadapter = new SqlDataAdapter(
-                    "select distinct std_batch_code from student_record ORDER BY std_batch_code ASC",
-                    connection_class.GetConnection());
-                DataSet dset = new DataSet();
-                dadapter.Fill(dset);
-                comboBox1.DataSource = dset.Tables[0];
-                comboBox1.DisplayMember = "std_batch_code";
-                comboBox1.ValueMember = "std_batch_code";
+                // Adjust font scaling (optional, but makes UI balanced)
+                foreach (Control c in form.Controls)
+                {
+                    c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+                }
 
-                // ✅ Fill Exams ComboBox (alphabetical order)
-                SqlDataAdapter dadapter2 = new SqlDataAdapter(
-                    "select ex_id, ex_name from tbl_exams ORDER BY ex_name ASC",
-                    connection_class.GetConnection());
-                DataSet dset2 = new DataSet();
-                dadapter2.Fill(dset2);
-                comboBox2.DataSource = dset2.Tables[0];
-                comboBox2.DisplayMember = "ex_name";
-                comboBox2.ValueMember = "ex_id";
-
-                // ✅ Apply styling and setup
-                dataGridView1.DataSource = vc.showrecord();
-                StyleDataGridView1();
-
-                dataGridView2.DataSource = vc.showrecord();
-                StyleDataGridView2();
-                dataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                dataGridView2.MultiSelect = true;
-                dataGridView2.ReadOnly = true;
-
+                // Center form
+                form.StartPosition = FormStartPosition.CenterScreen;
             }
-            private void RefreshSetExamTables()
+        private void Setexams_Load(object sender, EventArgs e)
+        {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+            this.TopMost = true;
+
+            Setexams.ScaleForm(this);
+
+            // Load student records only once
+            string q = "select * from student_record";
+            viewclass vc = new viewclass(q);
+
+            DataTable records = vc.showrecord(); // ?? call once
+
+            dataGridView1.DataSource = records;
+            ModernUi.StyleDataGridView(dataGridView1);
+
+            dataGridView2.DataSource = records.Copy(); // use a copy if needed
+            ModernUi.StyleDataGridView(dataGridView2);
+            dataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView2.MultiSelect = true;
+            dataGridView2.ReadOnly = true;
+
+            // Fill Batch Code ComboBox
+            SqlDataAdapter dadapter = new SqlDataAdapter(
+                "select distinct std_batch_code from student_record ORDER BY std_batch_code ASC",
+                connection_class.GetConnection());
+            DataSet dset = new DataSet();
+            dadapter.Fill(dset);
+            comboBox1.DataSource = dset.Tables[0];
+            comboBox1.DisplayMember = "std_batch_code";
+            comboBox1.ValueMember = "std_batch_code";
+
+            // Fill Exams ComboBox
+            SqlDataAdapter dadapter2 = new SqlDataAdapter(
+                "select ex_id, ex_name from tbl_exams ORDER BY ex_name ASC",
+                connection_class.GetConnection());
+            DataSet dset2 = new DataSet();
+            dadapter2.Fill(dset2);
+            comboBox2.DataSource = dset2.Tables[0];
+            comboBox2.DisplayMember = "ex_name";
+            comboBox2.ValueMember = "ex_id";
+
+            ConfigureModernAllocateWorkspace();
+        }
+
+        private void ConfigureModernAllocateWorkspace()
+        {
+            BackColor = Color.FromArgb(11, 18, 31);
+            label5.Text = "Allocate Exam To Students";
+            label5.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold, GraphicsUnit.Point);
+            label5.ForeColor = ModernUi.Ink;
+            label5.AutoSize = false;
+            label5.TextAlign = ContentAlignment.MiddleCenter;
+            label5.SetBounds(0, 16, ClientSize.Width, 42);
+
+            label1.Text = "Batch Code or Class";
+            label2.Text = "Student ID";
+            label3.Text = "Exam Name";
+
+            foreach (Label label in new[] { label1, label2, label3 })
+            {
+                label.ForeColor = ModernUi.Ink;
+                label.Font = new Font("Segoe UI Semibold", 11.5F, FontStyle.Bold, GraphicsUnit.Point);
+                label.AutoSize = false;
+                label.Size = new Size(180, 28);
+            }
+
+            label6.ForeColor = ModernUi.MutedInk;
+            label6.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            label6.Text = "Tip: fetch a batch, choose an exam, allocate one student manually or use Excel for bulk allocation.";
+            label6.AutoSize = false;
+            label6.Size = new Size(620, 54);
+
+            ModernUi.StyleComboBox(comboBox1);
+            ModernUi.StyleComboBox(comboBox2);
+            ModernUi.StyleTextInput(textBox1);
+            ModernUi.StyleDataGridView(dataGridView1);
+            ModernUi.StyleDataGridView(dataGridView2);
+
+            dataGridView1.MultiSelect = true;
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.ReadOnly = true;
+            dataGridView2.MultiSelect = true;
+            dataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView2.ReadOnly = true;
+
+            ModernUi.StylePrimaryButton(button1);
+            ModernUi.StylePrimaryButton(button2);
+            ModernUi.StyleSecondaryButton(button5);
+            ModernUi.StyleSecondaryButton(button3);
+            ModernUi.StyleDangerButton(buttonDeleteMultiple);
+
+            button1.Text = "Fetch Students";
+            button2.Text = "Allocate Student";
+            button5.Text = "Allocate With Excel";
+            button3.Text = "Load Allocated";
+            buttonDeleteMultiple.Text = "Delete Selected";
+
+            button4.ForeColor = ModernUi.AccentAlt;
+            button4.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            button4.AutoSize = false;
+            button4.TextAlign = ContentAlignment.MiddleLeft;
+
+            int margin = 36;
+            int contentWidth = ClientSize.Width - (margin * 2);
+            int leftWidth = (contentWidth - 28) / 2;
+            int rightWidth = contentWidth - leftWidth - 28;
+            int leftX = margin;
+            int rightX = leftX + leftWidth + 28;
+
+            label1.Location = new Point(leftX, 88);
+            comboBox1.SetBounds(leftX + 190, 82, leftWidth - 190, 40);
+            button1.SetBounds(leftX + 190, 136, 180, 46);
+
+            label3.Location = new Point(leftX, 214);
+            comboBox2.SetBounds(leftX + 190, 208, leftWidth - 190, 40);
+
+            label2.Location = new Point(leftX, 290);
+            textBox1.SetBounds(leftX + 190, 284, leftWidth - 190, 40);
+            button2.SetBounds(leftX + 190, 344, 180, 50);
+
+            label6.Location = new Point(leftX, 408);
+
+            int gridTop = 494;
+            int gridHeight = Math.Max(260, ClientSize.Height - gridTop - 88);
+
+            dataGridView1.SetBounds(leftX, gridTop, leftWidth, gridHeight);
+            dataGridView2.SetBounds(rightX, gridTop, rightWidth, gridHeight - 134);
+
+            button5.SetBounds(rightX, gridTop + gridHeight - 118, 180, 50);
+            buttonDeleteMultiple.SetBounds(rightX + 196, gridTop + gridHeight - 118, 180, 50);
+            button3.SetBounds(rightX, gridTop + gridHeight - 58, 180, 50);
+            button4.SetBounds(rightX + 196, gridTop + gridHeight - 52, rightWidth - 196, 28);
+
+            Panel leftCard = EnsureAllocateCard("__allocateLeftCard", new Rectangle(leftX - 12, gridTop - 12, leftWidth + 24, gridHeight + 24));
+            Panel rightCard = EnsureAllocateCard("__allocateRightCard", new Rectangle(rightX - 12, gridTop - 12, rightWidth + 24, gridHeight - 110));
+            leftCard.SendToBack();
+            rightCard.SendToBack();
+            dataGridView1.BringToFront();
+            dataGridView2.BringToFront();
+
+            button7.Visible = false;
+        }
+
+        private Panel EnsureAllocateCard(string name, Rectangle bounds)
+        {
+            Panel card = Controls.Find(name, false).OfType<Panel>().FirstOrDefault();
+            if (card == null)
+            {
+                card = ModernUi.CreateCard(bounds);
+                card.Name = name;
+                Controls.Add(card);
+            }
+            else
+            {
+                card.Bounds = bounds;
+                card.Invalidate();
+            }
+
+            return card;
+        }
+        private void RefreshSetExamTables()
             {
                 SqlConnection con = connection_class.GetConnection();
                 {
@@ -91,49 +236,16 @@
                 dataGridView2.AutoResizeColumns();
                 dataGridView2.ClearSelection();
             }
-
-
-
-
-
-
-            private void StyleDataGridView1()
-            {
-                dataGridView1.BackgroundColor = Color.LightYellow;
-                dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
-                dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                dataGridView1.DefaultCellStyle.BackColor = Color.LightCyan;
-                dataGridView1.DefaultCellStyle.ForeColor = Color.DarkBlue;
-                dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-                dataGridView1.EnableHeadersVisualStyles = false;
-                dataGridView1.ClearSelection();
-            }
-
-            private void StyleDataGridView2()
-            {
-                dataGridView2.BackgroundColor = Color.LightYellow;
-                dataGridView2.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
-                dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView2.Font, FontStyle.Bold);
-                dataGridView2.DefaultCellStyle.BackColor = Color.LightCyan;
-                dataGridView2.DefaultCellStyle.ForeColor = Color.DarkBlue;
-                dataGridView2.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-                dataGridView2.EnableHeadersVisualStyles = false;
-                dataGridView2.ClearSelection();
-            }
-
-
             private void button1_Click(object sender, EventArgs e)
             {
                 string q = "select * from student_record where std_id in (select std_id from set_exam) and std_batch_code ='" + comboBox1.SelectedValue.ToString() + "' ";
                 viewclass vc = new viewclass(q);
                 dataGridView1.DataSource = vc.showrecord();
-                StyleDataGridView1(); // <-- Add this
+                ModernUi.StyleDataGridView(dataGridView1);
 
 
                 dataGridView2.DataSource = vc.showrecord();
-                StyleDataGridView2(); // <--- Apply style here
+                ModernUi.StyleDataGridView(dataGridView2);
 
                 dataGridView1.DataSource = vc.showrecord();
             }
@@ -153,10 +265,10 @@
                 viewclass vc2 = new viewclass(q);
 
                 dataGridView1.DataSource = vc.showrecord();
-                StyleDataGridView1(); // <-- Add this
+                ModernUi.StyleDataGridView(dataGridView1);
 
                 dataGridView2.DataSource = vc.showrecord();
-                StyleDataGridView2(); // <--- Apply style here
+                ModernUi.StyleDataGridView(dataGridView2);
 
 
 
@@ -212,28 +324,7 @@
 
             private void button4_Click(object sender, EventArgs e)
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Title = "Download Sample Excel File";
-                saveFileDialog.Filter = "Excel Files|*.xlsx";
-                saveFileDialog.FileName = "Allocate Exam.xlsx";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        // Make sure the SetExamTemplate.xlsx is located in Resources folder of your application
-                        string sourcePath = Path.Combine(Application.StartupPath, "Resources", "Allocate Exam.xlsx");
-
-                        // Copy the file to the selected download path
-                        File.Copy(sourcePath, saveFileDialog.FileName, true);
-
-                        MessageBox.Show("Allocate Exam downloaded successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error: " + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+               
 
             }
 
@@ -407,6 +498,33 @@
                     }
                 }
             }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Download Sample Excel File";
+            saveFileDialog.Filter = "Excel Files|*.xlsx";
+            saveFileDialog.FileName = "Allocate Exam.xlsx";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    // Make sure the SetExamTemplate.xlsx is located in Resources folder of your application
+                    string sourcePath = Path.Combine(Application.StartupPath, "Resources", "Allocate Exam.xlsx");
+
+                    // Copy the file to the selected download path
+                    File.Copy(sourcePath, saveFileDialog.FileName, true);
+
+                    MessageBox.Show("Allocate Exam downloaded successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
+    }
 
     }
+

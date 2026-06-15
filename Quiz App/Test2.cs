@@ -1,18 +1,22 @@
-﻿using System;
+using DocumentFormat.OpenXml.Drawing;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows.Forms;
+using static iText.Kernel.Pdf.Colorspace.PdfDeviceCs;
 using static Quiz_App.student_control_panel;
 
 
 namespace Quiz_App
 {
-    public partial class Test2 : Form
+    public partial class Test2 : BaseForm
     {
+        protected override bool UseAutomaticResponsiveLayout => false;
         public static int score = 0;
         private int examId;
         private int totalSeconds = 3600;
@@ -26,6 +30,15 @@ namespace Quiz_App
         private List<int> visitedQuestionIds = new List<int>();
         private List<int> answeredQuestionIds = new List<int>();
         private Dictionary<int, (string Selected, string Correct)> selectedAnswers = new Dictionary<int, (string, string)>();
+        // Tracks correct/incorrect answers per question
+        private Dictionary<int, bool> answerCorrectness = new Dictionary<int, bool>();
+
+        private int exam_fk_id => int.Parse(studentlogin.exam_id);
+        private int student_id => int.Parse(studentlogin.studentid);
+
+
+        private calculator _calculatorForm;
+
 
         // NEW: unified questions table + helpers
         private DataTable _unifiedQuestions;
@@ -42,7 +55,8 @@ namespace Quiz_App
 
         private return_class rc = new return_class();
         private string correctop = "";
-        
+
+
 
 
 
@@ -57,8 +71,60 @@ namespace Quiz_App
             comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
         }
 
+        private void BuildExamLayout()
+        {
+            ModernUi.ApplyTheme(this);
+            ModernUi.AddGradientBackground(this, Color.FromArgb(8, 12, 22), Color.FromArgb(18, 30, 48));
+
+            BackColor = Color.FromArgb(8, 12, 22);
+            groupBox1.BackColor = Color.FromArgb(24, 33, 52);
+            groupBox2.BackColor = Color.FromArgb(24, 33, 52);
+            groupBox3.BackColor = Color.FromArgb(24, 33, 52);
+            panel1.BackColor = Color.FromArgb(15, 22, 37);
+            panel2.BackColor = Color.FromArgb(15, 22, 37);
+
+            label1.ForeColor = ModernUi.Ink;
+            label1.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.ForeColor = ModernUi.Warning;
+            label4.ForeColor = ModernUi.Accent;
+            timerLabel1.ForeColor = ModernUi.Warning;
+            timerLabel1.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold, GraphicsUnit.Point);
+
+            ModernUi.StyleComboBox(comboBox1);
+            ModernUi.StylePrimaryButton(button1);
+            ModernUi.StyleSecondaryButton(button4);
+            ModernUi.StyleSecondaryButton(button2);
+            ModernUi.StyleDangerButton(btnEndExam);
+
+            button1.Text = "Save & Next";
+            button4.Text = "Previous";
+            button2.Text = "Calculator";
+            btnEndExam.Text = "End Session";
+
+            foreach (RadioButton radioButton in new[] { radioButton1, radioButton2, radioButton3, radioButton4 })
+            {
+                radioButton.ForeColor = ModernUi.Ink;
+                radioButton.BackColor = Color.Transparent;
+                radioButton.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            }
+
+            ModernUi.StyleTextInput(txtShortAnswer);
+            txtShortAnswer.Multiline = true;
+            txtShortAnswer.ScrollBars = ScrollBars.Vertical;
+            pictureBoxQuestion.BackColor = Color.FromArgb(14, 20, 32);
+            pictureBoxQuestion.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+
         private void Test2_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;   // remove close/min/max buttons
+            this.WindowState = FormWindowState.Maximized;  // maximize to fill screen
+            //this.TopMost = true;                           // keep exam window on top
+            this.Resize -= Test2_Resize;
+            this.Resize += Test2_Resize;
+            BuildExamLayout();
+
+
             score = 0;
             label4.Text = "Score: 0";
             label4.Visible = true;
@@ -71,6 +137,7 @@ namespace Quiz_App
             // NEW: hide SA UI at start
             groupBox3.Visible = false;       // contains txtboxAnswer
             txtShortAnswer.Text = string.Empty;
+            ModernUi.FadeIn(this);
 
             UpdateTimerLabel();
             label10.Text = $"Questions: {totalQuestionsLimit}";
@@ -79,6 +146,14 @@ namespace Quiz_App
             BuildUnifiedQuestionsAndShowFirst();
 
             timer1.Start();
+        }
+
+        private void Test2_Resize(object sender, EventArgs e)
+        {
+            if (WindowState != FormWindowState.Minimized)
+            {
+                BuildExamLayout();
+            }
         }
 
         private void LoadQuestions()
@@ -124,7 +199,7 @@ namespace Quiz_App
 
             correctop = row["q_correctOpn"].ToString();
 
-            // ✅ Load image if available
+            // ? Load image if available
             if (row.Table.Columns.Contains("q_image") && row["q_image"] != DBNull.Value)
             {
                 byte[] imgBytes = (byte[])row["q_image"];
@@ -163,7 +238,7 @@ namespace Quiz_App
             radioButton4.Text = row["q_opD"].ToString();
             correctop = row["q_correctOpn"].ToString();
 
-            // ✅ Load image if available
+            // ? Load image if available
             if (row.Table.Columns.Contains("q_image") && row["q_image"] != DBNull.Value)
             {
                 byte[] imgBytes = (byte[])row["q_image"];
@@ -199,12 +274,12 @@ namespace Quiz_App
             // Apply previous answer if any
             if (selectedAnswers.ContainsKey(currentQuesId))
             {
-                string ans = selectedAnswers[currentQuesId].Selected;  // ✅ now correct
+                string ans = selectedAnswers[currentQuesId].Selected;  // ? now correct
 
-                if (radioButton1.Text.Replace(" ✅", "").Replace(" ❌", "") == ans) radioButton1.Checked = true;
-                else if (radioButton2.Text.Replace(" ✅", "").Replace(" ❌", "") == ans) radioButton2.Checked = true;
-                else if (radioButton3.Text.Replace(" ✅", "").Replace(" ❌", "") == ans) radioButton3.Checked = true;
-                else if (radioButton4.Text.Replace(" ✅", "").Replace(" ❌", "") == ans) radioButton4.Checked = true;
+                if (radioButton1.Text.Replace(" ?", "").Replace(" ?", "") == ans) radioButton1.Checked = true;
+                else if (radioButton2.Text.Replace(" ?", "").Replace(" ?", "") == ans) radioButton2.Checked = true;
+                else if (radioButton3.Text.Replace(" ?", "").Replace(" ?", "") == ans) radioButton3.Checked = true;
+                else if (radioButton4.Text.Replace(" ?", "").Replace(" ?", "") == ans) radioButton4.Checked = true;
 
                 // Lock options again since question was already answered
                 radioButton1.Enabled = false;
@@ -249,14 +324,14 @@ namespace Quiz_App
             {
                 // MCQ (your existing logic)
                 string selected = "";
-                if (radioButton1.Checked) selected = radioButton1.Text.Replace(" ✅", "").Replace(" ❌", "");
-                else if (radioButton2.Checked) selected = radioButton2.Text.Replace(" ✅", "").Replace(" ❌", "");
-                else if (radioButton3.Checked) selected = radioButton3.Text.Replace(" ✅", "").Replace(" ❌", "");
-                else if (radioButton4.Checked) selected = radioButton4.Text.Replace(" ✅", "").Replace(" ❌", "");
+                if (radioButton1.Checked) selected = radioButton1.Text.Replace(" ?", "").Replace(" ?", "");
+                else if (radioButton2.Checked) selected = radioButton2.Text.Replace(" ?", "").Replace(" ?", "");
+                else if (radioButton3.Checked) selected = radioButton3.Text.Replace(" ?", "").Replace(" ?", "");
+                else if (radioButton4.Checked) selected = radioButton4.Text.Replace(" ?", "").Replace(" ?", "");
 
                 if (string.IsNullOrEmpty(selected)) return;
 
-                string sanitizedCorrect = (correctop ?? "").Replace(" ✅", "").Replace(" ❌", "");
+                string sanitizedCorrect = (correctop ?? "").Replace(" ?", "").Replace(" ?", "");
 
                 selectedAnswers[CurrentId] = (selected, sanitizedCorrect);
 
@@ -268,23 +343,23 @@ namespace Quiz_App
                 label4.Text = $"Score: {score}";
                 label4.Visible = true;
 
-                // reset texts then mark ✅ / ❌
-                radioButton1.Text = radioButton1.Text.Replace(" ✅", "").Replace(" ❌", "");
-                radioButton2.Text = radioButton2.Text.Replace(" ✅", "").Replace(" ❌", "");
-                radioButton3.Text = radioButton3.Text.Replace(" ✅", "").Replace(" ❌", "");
-                radioButton4.Text = radioButton4.Text.Replace(" ✅", "").Replace(" ❌", "");
+                // reset texts then mark ? / ?
+                radioButton1.Text = radioButton1.Text.Replace(" ?", "").Replace(" ?", "");
+                radioButton2.Text = radioButton2.Text.Replace(" ?", "").Replace(" ?", "");
+                radioButton3.Text = radioButton3.Text.Replace(" ?", "").Replace(" ?", "");
+                radioButton4.Text = radioButton4.Text.Replace(" ?", "").Replace(" ?", "");
 
-                if (radioButton1.Text == sanitizedCorrect) radioButton1.Text += " ✅";
-                else if (radioButton1.Checked) radioButton1.Text += " ❌";
+                if (radioButton1.Text == sanitizedCorrect) radioButton1.Text += " ?";
+                else if (radioButton1.Checked) radioButton1.Text += " ?";
 
-                if (radioButton2.Text == sanitizedCorrect) radioButton2.Text += " ✅";
-                else if (radioButton2.Checked) radioButton2.Text += " ❌";
+                if (radioButton2.Text == sanitizedCorrect) radioButton2.Text += " ?";
+                else if (radioButton2.Checked) radioButton2.Text += " ?";
 
-                if (radioButton3.Text == sanitizedCorrect) radioButton3.Text += " ✅";
-                else if (radioButton3.Checked) radioButton3.Text += " ❌";
+                if (radioButton3.Text == sanitizedCorrect) radioButton3.Text += " ?";
+                else if (radioButton3.Checked) radioButton3.Text += " ?";
 
-                if (radioButton4.Text == sanitizedCorrect) radioButton4.Text += " ✅";
-                else if (radioButton4.Checked) radioButton4.Text += " ❌";
+                if (radioButton4.Text == sanitizedCorrect) radioButton4.Text += " ?";
+                else if (radioButton4.Checked) radioButton4.Text += " ?";
 
                 radioButton1.Enabled = radioButton2.Enabled = radioButton3.Enabled = radioButton4.Enabled = false;
                 comboBox1.Invalidate();
@@ -330,11 +405,7 @@ namespace Quiz_App
 
         private void btnEndExam_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("End exam early?", "Confirm", MessageBoxButtons.YesNo);
-            if (dr == DialogResult.Yes)
-            {
-                EndExam();
-            }
+           
         }
 
         private void EndExam()
@@ -342,40 +413,148 @@ namespace Quiz_App
             timer1.Stop();
             float percentage = ((float)score / totalQuestionsLimit) * 100;
             this.Hide();
-            new messageform(score, totalQuestionsLimit).Show();
+           // new messageform(score, totalQuestionsLimit).Show();
         }
 
         private void comboBox1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= comboBox1.Items.Count) return;
+            if (e.Index < 0 || _unifiedQuestions == null || e.Index >= _unifiedQuestions.Rows.Count)
+                return;
 
-            int quesId = (e.Index < visitedQuestionIds.Count) ? visitedQuestionIds[e.Index] : -1;
-            bool isAnswered = answeredQuestionIds.Contains(quesId);
+            DataRow row = _unifiedQuestions.Rows[e.Index];
+            int quesId = Convert.ToInt32(row["ques_id"]);
 
-            string text = $"Question {e.Index + 1}";
+            string displayText = $"Question {e.Index + 1}";
             Brush brush = Brushes.Black;
             Font font = e.Font;
 
-            if (quesId == -1) brush = Brushes.Gray;
-            else if (isAnswered) { brush = Brushes.Green; font = new Font(e.Font, FontStyle.Bold); text += " ✅"; }
-            else text += " ❌";
+            if (answeredQuestionIds.Contains(quesId))
+            {
+                // ? or ? depending on correctness
+                if (answerCorrectness.ContainsKey(quesId) && answerCorrectness[quesId])
+                {
+                    brush = Brushes.Green;
+                    font = new Font(e.Font, FontStyle.Bold);
+                    displayText += " ?";
+                }
+                else
+                {
+                    brush = Brushes.Red;
+                    font = new Font(e.Font, FontStyle.Bold);
+                    displayText += " ?";
+                }
+            }
+            else if (visitedQuestionIds.Contains(quesId))
+            {
+                // Visited but not answered
+                brush = Brushes.Gray;
+                displayText += " ?";
+            }
+            else
+            {
+                // Not visited at all
+                brush = Brushes.DarkGray;
+                displayText += " ?";
+            }
 
             e.DrawBackground();
-            e.Graphics.DrawString(text, font, brush, e.Bounds);
+            e.Graphics.DrawString(displayText, font, brush, e.Bounds);
             e.DrawFocusRectangle();
         }
 
-       
+
+
+
+
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int idx = comboBox1.SelectedIndex;
-            if (idx >= 0 && idx < _unifiedQuestions.Rows.Count)
+            if (_unifiedQuestions == null || comboBox1.SelectedIndex < 0 || comboBox1.SelectedIndex >= _unifiedQuestions.Rows.Count)
+                return;
+
+            _currentIndex = comboBox1.SelectedIndex;
+
+            int quesId = Convert.ToInt32(_unifiedQuestions.Rows[_currentIndex]["ques_id"]);
+
+            if (!visitedQuestionIds.Contains(quesId))
+                visitedQuestionIds.Add(quesId);
+
+            PresentQuestionAt(_currentIndex);
+
+            label8.Text = $"Question {_currentIndex + 1} of {totalQuestionsLimit}";
+
+            comboBox1.Invalidate();
+        }
+
+
+        private void CheckAnswer(int quesId, string studentAnswer)
+        {
+            DataRow[] rows = _unifiedQuestions.Select($"ques_id = {quesId}");
+            if (rows.Length == 0) return;
+
+            DataRow row = rows[0];
+            string qType = row["q_type"].ToString();
+
+            bool isCorrect = false;
+
+            if (qType == "MCQ")
             {
-                _currentIndex = idx;
-                PresentQuestionAt(_currentIndex);
+                // For MCQ compare selected option (A/B/C/D) with correct option
+                string correctOption = row["q_correctOpn"].ToString().Trim().ToUpper();
+                string studentOption = studentAnswer.Trim().ToUpper();
+
+                isCorrect = (studentOption == correctOption);
+            }
+            else if (qType == "SA")
+            {
+                // For short answer compare text ignoring case + spaces
+                string correctText = row["correct_answer"].ToString().Trim().ToLower();
+                string studentText = studentAnswer.Trim().ToLower();
+
+                isCorrect = (studentText == correctText);
+            }
+
+            // Mark as answered
+            if (!answeredQuestionIds.Contains(quesId))
+                answeredQuestionIds.Add(quesId);
+
+            // Store correctness
+            answerCorrectness[quesId] = isCorrect;
+
+            // Refresh ComboBox visuals
+            comboBox1.Invalidate();
+        }
+
+        private void btnLockAnswer_Click(object sender, EventArgs e)
+        {
+            if (_currentIndex < 0) return;
+
+            int quesId = Convert.ToInt32(_unifiedQuestions.Rows[_currentIndex]["ques_id"]);
+            string chosenOption = "";
+
+            if (radioButton1.Checked) chosenOption = "A";
+            else if (radioButton2.Checked) chosenOption = "B";
+            else if (radioButton3.Checked) chosenOption = "C";
+            else if (radioButton4.Checked) chosenOption = "D";
+
+            if (!string.IsNullOrEmpty(chosenOption))
+            {
+                CheckAnswer(quesId, chosenOption);
             }
         }
 
+        private void btnSubmitShortAnswer_Click(object sender, EventArgs e)
+        {
+            if (_currentIndex < 0) return;
+
+            int quesId = Convert.ToInt32(_unifiedQuestions.Rows[_currentIndex]["ques_id"]);
+            string studentText = txtShortAnswer.Text;
+
+            if (!string.IsNullOrWhiteSpace(studentText))
+            {
+                CheckAnswer(quesId, studentText);
+            }
+        }
 
         private DataRow GetDataRow(string query)
         {
@@ -395,17 +574,7 @@ namespace Quiz_App
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (_unifiedQuestions == null) return;
-
-            if (_currentIndex > 0)
-            {
-                _currentIndex--;
-                PresentQuestionAt(_currentIndex);
-            }
-            else
-            {
-                MessageBox.Show("This is the first question.");
-            }
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -415,25 +584,13 @@ namespace Quiz_App
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SaveAnswer();
-            if (_unifiedQuestions == null) return;
-
-            if (_currentIndex < _unifiedQuestions.Rows.Count - 1)
-            {
-                _currentIndex++;
-                PresentQuestionAt(_currentIndex);
-            }
-            else
-            {
-                MessageBox.Show("This is the last question.");
-            }
+           
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
 
-            calculator c = new calculator();
-            c.Show();
+           
         }
 
         private Image ByteArrayToImage(byte[] bytes)
@@ -490,35 +647,38 @@ namespace Quiz_App
                 }
 
                 // 2) Load Short-Answer questions
+                // 2) Load Short-Answer questions
                 using (var cmd = new SqlCommand(@"
-            SELECT sa_id, ex_id_fk, sa_question, sa_answer, sa_image
-            FROM tbl_past_shortanswer
-            WHERE ex_id_fk = @examId", con))
+    SELECT sa_id, ques_title, correct_answer, ques_image
+    FROM tbl_past_shortanswer
+    WHERE exam_id = @examId", con))
                 {
-                    cmd.Parameters.AddWithValue("@examId", examId);
-                    using (var r = cmd.ExecuteReader())
+                    cmd.Parameters.Add("@examId", SqlDbType.Int).Value = examId;
+
+                    using (SqlDataReader r = cmd.ExecuteReader())
                     {
                         while (r.Read())
                         {
                             var row = _unifiedQuestions.NewRow();
-                            row["ques_id"] = r["sa_id"];
-                            row["q_type"] = "SA";
-                            row["q_title"] = r["sa_question"]?.ToString();
+                            row["ques_id"] = r["sa_id"];                      // map sa_id ? ques_id
+                            row["q_type"] = "SA";                             // mark as Short Answer
+                            row["q_title"] = r["ques_title"]?.ToString();
                             row["q_opA"] = "";
                             row["q_opB"] = "";
                             row["q_opC"] = "";
                             row["q_opD"] = "";
-                            row["q_correctOpn"] = DBNull.Value;
-                            row["correct_answer"] = r["sa_answer"]?.ToString();
-                            row["q_image"] = r["sa_image"] == DBNull.Value ? null : (byte[])r["sa_image"];
+                            row["q_correctOpn"] = DBNull.Value;               // not used for SA
+                            row["correct_answer"] = r["correct_answer"]?.ToString();
+                            row["q_image"] = r["ques_image"] == DBNull.Value ? null : (byte[])r["ques_image"];
                             _unifiedQuestions.Rows.Add(row);
                         }
                     }
                 }
             }
 
-            // Apply shuffle or ordered by ques_id
-            IEnumerable<DataRow> rows = _unifiedQuestions.AsEnumerable();
+
+                // Apply shuffle or ordered by ques_id
+                IEnumerable<DataRow> rows = _unifiedQuestions.AsEnumerable();
             if (isShuffleMode)
                 rows = rows.OrderBy(_ => Guid.NewGuid());
             else
@@ -595,10 +755,10 @@ namespace Quiz_App
             else
             {
                 // Fill options and enable radios
-                radioButton1.Text = (row["q_opA"]?.ToString() ?? "").Replace(" ✅", "").Replace(" ❌", "");
-                radioButton2.Text = (row["q_opB"]?.ToString() ?? "").Replace(" ✅", "").Replace(" ❌", "");
-                radioButton3.Text = (row["q_opC"]?.ToString() ?? "").Replace(" ✅", "").Replace(" ❌", "");
-                radioButton4.Text = (row["q_opD"]?.ToString() ?? "").Replace(" ✅", "").Replace(" ❌", "");
+                radioButton1.Text = (row["q_opA"]?.ToString() ?? "").Replace(" ?", "").Replace(" ?", "");
+                radioButton2.Text = (row["q_opB"]?.ToString() ?? "").Replace(" ?", "").Replace(" ?", "");
+                radioButton3.Text = (row["q_opC"]?.ToString() ?? "").Replace(" ?", "").Replace(" ?", "");
+                radioButton4.Text = (row["q_opD"]?.ToString() ?? "").Replace(" ?", "").Replace(" ?", "");
 
                 radioButton1.Enabled = radioButton2.Enabled = radioButton3.Enabled = radioButton4.Enabled = true;
 
@@ -619,9 +779,77 @@ namespace Quiz_App
             comboBox1.SelectedIndex = Math.Min(_currentIndex, comboBox1.Items.Count - 1);
         }
 
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
 
+        }
 
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            if (_unifiedQuestions == null) return;
 
+            if (_currentIndex > 0)
+            {
+                _currentIndex--;
+                PresentQuestionAt(_currentIndex);
+            }
+            else
+            {
+                MessageBox.Show("This is the first question.");
+            }
+        }
 
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            SaveAnswer();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            if (_calculatorForm == null || _calculatorForm.IsDisposed)
+            {
+                _calculatorForm = new calculator();
+                _calculatorForm.StartPosition = FormStartPosition.CenterScreen;
+                _calculatorForm.Show();
+            }
+            else
+            {
+                // If already open, bring it to front
+                _calculatorForm.BringToFront();
+                _calculatorForm.WindowState = FormWindowState.Normal; // restore if minimized
+                _calculatorForm.Activate();
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SaveAnswer();
+            if (_unifiedQuestions == null) return;
+
+            if (_currentIndex < _unifiedQuestions.Rows.Count - 1)
+            {
+                _currentIndex++;
+                PresentQuestionAt(_currentIndex);
+            }
+            else
+            {
+                MessageBox.Show("This is the last question.");
+            }
+        }
+
+        private void btnEndExam_Click_1(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("End exam early?", "Confirm", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                EndExam();
+            }
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
+

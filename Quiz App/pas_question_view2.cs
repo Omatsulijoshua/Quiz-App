@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,7 +17,7 @@ using OfficeOpenXml.Table;
 
 namespace Quiz_App
 {
-    public partial class pas_question_view2 : Form
+    public partial class pas_question_view2 : BaseForm
     {
         public pas_question_view2()
         {
@@ -26,9 +26,37 @@ namespace Quiz_App
 
         }
 
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void pas_question_view2_Load(object sender, EventArgs e)
         {
-            LoadExams();   // ✅ first load exams into comboBox
+            
+            pas_question_view2.ScaleForm(this);
+            LoadExams();   // ? first load exams into comboBox
             label8.Text = ""; // clear exam id label at start
         }
 
@@ -63,12 +91,16 @@ namespace Quiz_App
                 da.Fill(dt);
 
                 dataGridView1.DataSource = dt;
+                dataGridView1.AutoGenerateColumns = true;
 
                 if (dataGridView1.Columns.Contains("ques_image"))
                     dataGridView1.Columns["ques_image"].Visible = false;
 
                 if (dataGridView1.Columns.Contains("sa_id"))
                     dataGridView1.Columns["sa_id"].HeaderText = "ID";
+
+                ModernUi.StyleDataGridView(dataGridView1);
+                dataGridView1.ClearSelection();
             }
         }
 
@@ -156,7 +188,7 @@ namespace Quiz_App
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName + ".csv");
             File.WriteAllText(path, sb.ToString());
 
-            MessageBox.Show("✅ Data exported successfully to: " + path);
+            MessageBox.Show("? Data exported successfully to: " + path);
         }
 
         private void btnBrowseImage_Click(object sender, EventArgs e)
@@ -209,7 +241,7 @@ namespace Quiz_App
                     }
                 }
 
-                MessageBox.Show("✅ Question reversed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("? Question reversed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -240,7 +272,7 @@ namespace Quiz_App
                 {
                     using (SqlConnection con = connection_class.GetConnection())
                     {
-                        string deleteQuery = "DELETE FROM tbl_shortanswer WHERE exam_id = @examId";
+                        string deleteQuery = "DELETE FROM tbl_past_shortanswer WHERE exam_id = @examId";
                         using (SqlCommand cmd = new SqlCommand(deleteQuery, con))
                         {
                             cmd.Parameters.AddWithValue("@examId", examId);
@@ -264,3 +296,4 @@ namespace Quiz_App
         }
     }
 }
+

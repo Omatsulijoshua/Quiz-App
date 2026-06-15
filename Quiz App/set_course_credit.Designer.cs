@@ -42,7 +42,7 @@
             // numericUpDownDuration1
             // 
             this.numericUpDownDuration1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDownDuration1.Location = new System.Drawing.Point(188, 184);
+            this.numericUpDownDuration1.Location = new System.Drawing.Point(485, 217);
             this.numericUpDownDuration1.Name = "numericUpDownDuration1";
             this.numericUpDownDuration1.Size = new System.Drawing.Size(326, 29);
             this.numericUpDownDuration1.TabIndex = 53;
@@ -52,7 +52,7 @@
             this.label1.BackColor = System.Drawing.Color.Silver;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(140, 9);
+            this.label1.Location = new System.Drawing.Point(437, 42);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(345, 29);
             this.label1.TabIndex = 51;
@@ -64,7 +64,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(102, 126);
+            this.label7.Location = new System.Drawing.Point(399, 159);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 24);
             this.label7.TabIndex = 5;
@@ -75,7 +75,7 @@
             this.comboBox1.DisplayMember = "ex_name";
             this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(188, 111);
+            this.comboBox1.Location = new System.Drawing.Point(485, 144);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(326, 39);
             this.comboBox1.TabIndex = 6;
@@ -87,7 +87,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(102, 189);
+            this.label2.Location = new System.Drawing.Point(399, 222);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(42, 24);
             this.label2.TabIndex = 5;
@@ -96,7 +96,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(246, 280);
+            this.button1.Location = new System.Drawing.Point(543, 313);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(138, 38);
             this.button1.TabIndex = 54;
@@ -107,7 +107,7 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(188, 347);
+            this.dataGridView1.Location = new System.Drawing.Point(485, 380);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(238, 243);
             this.dataGridView1.TabIndex = 55;
@@ -115,10 +115,10 @@
             // 
             // set_course_credit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(634, 614);
+            this.ClientSize = new System.Drawing.Size(1242, 776);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.numericUpDownDuration1);
@@ -126,6 +126,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label7);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "set_course_credit";
             this.Text = "set_course_credit";
             this.Load += new System.EventHandler(this.set_course_credit_Load);

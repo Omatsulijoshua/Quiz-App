@@ -1,4 +1,4 @@
-﻿// ReportCardForm.cs
+// ReportCardForm.cs
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
@@ -7,15 +7,42 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using DrawingFont = System.Drawing.Font;
 
 namespace Quiz_App
 {
-    public partial class ReportCardForm : Form
+    public partial class ReportCardForm : BaseForm
     {
         private int studentId;
         private string studentName;
         private string studentPosition;
 
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+              //  c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         public ReportCardForm(int stdId, string stdName, string position)
         {
             InitializeComponent();
@@ -155,5 +182,11 @@ namespace Quiz_App
             else if (percentage >= 40) return "E8";
             else return "F9";
         }
+
+        private void ReportCardForm_Load(object sender, EventArgs e)
+        {
+            ReportCardForm.ScaleForm(this);
+        }
     }
 }
+

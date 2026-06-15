@@ -1,8 +1,7 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using ExcelDataReader;
 using OfficeOpenXml; // Add at the top of your file
 using OfficeOpenXml.Style;
-using SixLabors.Fonts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,29 +15,43 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
+
 namespace Quiz_App
 {
-    public partial class add_question : Form
+    public partial class add_question : BaseForm
     {
+        private Panel editorCard;
+        private Panel imageCard;
+        private Panel gridCard;
+
         public add_question()
         {
             InitializeComponent();
         }
+
+
+
+
+
         private int selectedQuestionId = -1;  // class level variable
         private void add_question_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;   // remove close/min/max buttons
+            this.WindowState = FormWindowState.Maximized;  // maximize to fill screen
+            this.TopMost = false;
+            ModernUi.ScaleForScreen(this);
+            BuildQuestionManagementLayout();
+
+            // Load exams into dataset from DB
             this.tbl_examsTableAdapter.Fill(this.quizAppDataSet1.tbl_exams);
 
-            // ✅ Sort exams alphabetically by exam_name
+            // ? Sort exams alphabetically by exam_name
             DataView dv = new DataView(this.quizAppDataSet1.tbl_exams);
-            dv.Sort = "ex_name ASC"; // <-- make sure your column name is correct
+            dv.Sort = "ex_name ASC"; // <-- make sure column name matches your table exactly
 
             comboBox1.DataSource = dv;
             comboBox1.DisplayMember = "ex_name"; // what user sees
-            comboBox1.ValueMember = "ex_id";       // primary key (ID)
-
-            // Load admins
-            this.tbl_adminTableAdapter.Fill(this.quizAppDataSet.tbl_admin);
+            comboBox1.ValueMember = "ex_id";     // primary key (ID)
 
             dataGridView1.ReadOnly = true;
             dataGridView1.AllowUserToAddRows = false;
@@ -47,26 +60,131 @@ namespace Quiz_App
 
             BindData();
 
-
         }
-        //private void comboBoxQuestionType_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (comboBoxQuestionType.SelectedItem != null)
-        //    {
-        //        string selectedType = comboBoxQuestionType.SelectedItem.ToString();
 
-        //        if (selectedType == "Multiple Choice")
-        //        {
-        //            panelMCQ.Visible = true;
-        //            panelShortAnswer.Visible = false;
-        //        }
-        //        else if (selectedType == "Short Answer")
-        //        {
-        //            panelMCQ.Visible = false;
-        //            panelShortAnswer.Visible = true;
-        //        }
-        //    }
-        //}
+        private void BuildQuestionManagementLayout()
+        {
+            BackColor = Color.FromArgb(9, 15, 29);
+
+            if (editorCard == null)
+            {
+                editorCard = ModernUi.CreateCard(new Rectangle(28, 86, 980, 490));
+                imageCard = ModernUi.CreateCard(new Rectangle(1030, 86, 420, 490));
+                gridCard = ModernUi.CreateCard(new Rectangle(28, 610, 1422, 300));
+
+                Controls.Add(editorCard);
+                Controls.Add(imageCard);
+                Controls.Add(gridCard);
+
+                editorCard.SendToBack();
+                imageCard.SendToBack();
+                gridCard.SendToBack();
+            }
+
+            label10.Text = "Question Bank Manager";
+            label10.ForeColor = ModernUi.Ink;
+            label10.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold, GraphicsUnit.Point);
+            label10.Location = new Point(32, 24);
+            label10.AutoSize = true;
+            label10.BringToFront();
+
+            panelMCQ.Parent = editorCard;
+            panelMCQ.BackColor = Color.Transparent;
+            panelMCQ.ForeColor = ModernUi.Ink;
+            panelMCQ.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold, GraphicsUnit.Point);
+            panelMCQ.Text = "Question Details";
+            panelMCQ.Location = new Point(18, 18);
+            panelMCQ.Size = new Size(944, 454);
+
+            ModernUi.StyleComboBox(comboBox1);
+            comboBox1.Parent = imageCard;
+            comboBox1.Location = new Point(22, 56);
+            comboBox1.Size = new Size(250, 36);
+
+            label7.Parent = imageCard;
+            label7.BackColor = Color.Transparent;
+            label7.ForeColor = ModernUi.Ink;
+            label7.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            label7.Text = "Linked Exam";
+            label7.Location = new Point(22, 24);
+            label7.AutoSize = true;
+
+            label8.Parent = imageCard;
+            label8.BackColor = Color.Transparent;
+            label8.ForeColor = ModernUi.MutedInk;
+            label8.Font = new Font("Segoe UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point);
+            label8.Location = new Point(286, 60);
+            label8.AutoSize = true;
+
+            label11.Parent = imageCard;
+            label11.BackColor = Color.Transparent;
+            label11.ForeColor = ModernUi.Ink;
+            label11.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            label11.Text = "Question Image";
+            label11.Location = new Point(22, 112);
+            label11.AutoSize = true;
+
+            pictureBoxQuestion.Parent = imageCard;
+            pictureBoxQuestion.BackColor = Color.FromArgb(14, 20, 32);
+            pictureBoxQuestion.Location = new Point(22, 144);
+            pictureBoxQuestion.Size = new Size(376, 208);
+            pictureBoxQuestion.SizeMode = PictureBoxSizeMode.Zoom;
+
+            ConfigureButton(button1, panelMCQ, "Add Question", true, new Rectangle(24, 388, 160, 42));
+            ConfigureButton(button5, panelMCQ, "Update Question", false, new Rectangle(194, 388, 160, 42));
+            ConfigureButton(button2, panelMCQ, "Delete Selected", false, new Rectangle(364, 388, 160, 42));
+            ConfigureButton(btnImportQuestions_Click, panelMCQ, "Import Excel", false, new Rectangle(534, 388, 150, 42));
+            ConfigureButton(button6, panelMCQ, "Export", false, new Rectangle(694, 388, 120, 42));
+            ConfigureButton(button4, panelMCQ, "Archive To Past Questions", false, new Rectangle(824, 388, 110, 42));
+
+            ConfigureButton(btnBrowseImage, imageCard, "Browse Image", false, new Rectangle(22, 370, 120, 40));
+            ConfigureButton(btnClearImage, imageCard, "Clear Image", false, new Rectangle(152, 370, 120, 40));
+
+            btnDownloadSample.Parent = imageCard;
+            btnDownloadSample.BackColor = Color.Transparent;
+            btnDownloadSample.ForeColor = ModernUi.AccentAlt;
+            btnDownloadSample.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            btnDownloadSample.Text = "Download sample import sheet";
+            btnDownloadSample.Location = new Point(22, 424);
+            btnDownloadSample.AutoSize = true;
+
+            dataGridView1.Parent = gridCard;
+            dataGridView1.Location = new Point(18, 52);
+            dataGridView1.Size = new Size(1386, 224);
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            Label tableTitle = gridCard.Controls.OfType<Label>().FirstOrDefault(existing => Convert.ToString(existing.Tag) == "card-title");
+            if (tableTitle == null)
+            {
+                tableTitle = ModernUi.CreateLabel(
+                    "Existing Questions",
+                    new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point),
+                    ModernUi.Ink,
+                    new Point(18, 16),
+                    new Size(220, 28),
+                    ContentAlignment.MiddleLeft);
+                tableTitle.Tag = "card-title";
+                gridCard.Controls.Add(tableTitle);
+            }
+        }
+
+        private void ConfigureButton(Button button, System.Windows.Forms.Control parent, string text, bool primary, Rectangle bounds)
+        {
+            button.Parent = parent;
+            if (primary)
+            {
+                ModernUi.StylePrimaryButton(button);
+            }
+            else
+            {
+                ModernUi.StyleSecondaryButton(button);
+            }
+
+            button.Text = text;
+            button.Bounds = bounds;
+        }
+
+
 
 
 
@@ -244,7 +362,7 @@ namespace Quiz_App
                                 string opD = row["q_opD"].ToString().Trim();
                                 string correct = row["q_correctOpn"].ToString().Trim();
 
-                                // ✅ Image file path from Excel
+                                // ? Image file path from Excel
                                 string imagePath = row["q_image"].ToString().Trim();
                                 byte[] imageBytes = null;
 
@@ -271,7 +389,7 @@ namespace Quiz_App
                                     cmd.Parameters.AddWithValue("@admin", Admin_Logincs.fk_ad); // your admin ID
                                     cmd.Parameters.AddWithValue("@exam", comboBox1.SelectedValue.ToString());
 
-                                    // ✅ Image parameter (null if no image)
+                                    // ? Image parameter (null if no image)
                                     if (imageBytes != null)
                                         cmd.Parameters.Add("@image", SqlDbType.VarBinary).Value = imageBytes;
                                     else
@@ -281,13 +399,13 @@ namespace Quiz_App
                                 }
                             }
                             BindData();
-                            MessageBox.Show("✅ Questions (with images) imported successfully!");
+                            MessageBox.Show("? Questions (with images) imported successfully!");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("❌ Import failed: " + ex.Message);
+                    MessageBox.Show("? Import failed: " + ex.Message);
                 }
             }
         }
@@ -511,7 +629,7 @@ namespace Quiz_App
 
                     MessageBox.Show("Selected exam questions moved to past questions successfully!");
 
-                    // ✅ Refresh DataGridView after moving
+                    // ? Refresh DataGridView after moving
                     BindData();
                     dataGridView1.ClearSelection();
                 }
@@ -556,7 +674,7 @@ namespace Quiz_App
                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName + ".xlsx");
                 wb.SaveAs(path);
 
-                MessageBox.Show("✅ Data exported successfully to: " + path);
+                MessageBox.Show("? Data exported successfully to: " + path);
             }
         }
 
@@ -683,6 +801,7 @@ namespace Quiz_App
        
     }
 }
+
 
 
 

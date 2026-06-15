@@ -23,15 +23,53 @@ namespace Quiz_App.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n        Server=192.168.43.67,1433;Database=quizApp;User Id=quizusers;Password=J" +
-            "os@56567;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;" +
-            "\r\n      ")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=OMATSULI-TOJU-J;Database=quizApp;User Id=quizusers;Password=Jos@56567;" +
+            "Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;")]
         public string quizAppConnectionString {
             get {
                 return ((string)(this["quizAppConnectionString"]));
+            }
+            set {
+                this["quizAppConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Local")]
+        public string ActiveDatabaseMode {
+            get {
+                return ((string)(this["ActiveDatabaseMode"]));
+            }
+            set {
+                this["ActiveDatabaseMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LocalConnectionStringOverride {
+            get {
+                return ((string)(this["LocalConnectionStringOverride"]));
+            }
+            set {
+                this["LocalConnectionStringOverride"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzureConnectionStringOverride {
+            get {
+                return ((string)(this["AzureConnectionStringOverride"]));
+            }
+            set {
+                this["AzureConnectionStringOverride"] = value;
             }
         }
     }

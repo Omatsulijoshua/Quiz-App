@@ -117,8 +117,8 @@
             // 
             // ReportCardForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1054, 520);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.labelPosition);
@@ -130,6 +130,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ReportCardForm";
             this.Text = "Report Card";
+            this.Load += new System.EventHandler(this.ReportCardForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewReport)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

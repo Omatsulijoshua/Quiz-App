@@ -62,7 +62,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(270, 23);
             this.label8.TabIndex = 20;
-            this.label8.Text = "PASST QUESTIONS SETTINGS";
+            this.label8.Text = "PAST QUESTIONS SETTINGS";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pictureBox2
@@ -113,8 +113,8 @@
             // 
             // select__pastquestions_settings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(776, 347);
             this.Controls.Add(this.pictureBox7);
@@ -127,6 +127,7 @@
             this.Name = "select__pastquestions_settings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "select__pastquestions_settings";
+            this.Load += new System.EventHandler(this.select__pastquestions_settings_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();

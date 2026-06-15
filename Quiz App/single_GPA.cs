@@ -1,119 +1,272 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using ClosedXML.Excel;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class single_GPA : Form
+    public partial class single_GPA : BaseForm
     {
+        private bool _loadingFilters;
+
         public single_GPA()
         {
             InitializeComponent();
         }
-        private DataTable dt; // ✅ make it class-level
-        private void btnClear_Click(object sender, EventArgs e)
+
+        private void ApplyModernLayout()
         {
-            dataGridViewMaster.DataSource = null;
-            textBox1.Clear();
-            label2.Text = "GPA = ?";
+            ModernUi.ApplyTheme(this);
+            ModernUi.StyleComboBox(batchFilterCombo);
+            ModernUi.StyleComboBox(examFilterCombo);
+            ModernUi.StyleComboBox(studentFilterCombo);
+            ModernUi.StyleDataGridView(dataGridViewMaster);
+            ModernUi.StylePrimaryButton(button1);
+            ModernUi.StyleSecondaryButton(btnClear);
+            ModernUi.StyleSecondaryButton(btnRefresh);
+            ModernUi.StyleSecondaryButton(button2);
+
+            labelTitle.ForeColor = ModernUi.Ink;
+            labelTitle.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold, GraphicsUnit.Point);
+
+            labelBatch.ForeColor = ModernUi.MutedInk;
+            labelExam.ForeColor = ModernUi.MutedInk;
+            labelStudent.ForeColor = ModernUi.MutedInk;
+
+            label2.ForeColor = Color.FromArgb(92, 240, 195);
+            label2.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+
+            ArrangeResponsiveLayout();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ArrangeResponsiveLayout()
         {
-            if (string.IsNullOrWhiteSpace(textBox1.Text))
-            {
-                MessageBox.Show("Please enter a Student ID");
-                return;
-            }
+            int sidePadding = 32;
+            int topPadding = 24;
+            int headerButtonWidth = 120;
+            int headerButtonHeight = 42;
+            int titleTop = topPadding + 4;
+            int filterLabelTop = 82;
+            int filterTop = 104;
+            int filterGap = 32;
+            int gridTop = 176;
+            int bottomButtonHeight = 52;
+            int bottomPadding = 28;
+            int bottomRowTop = ClientSize.Height - bottomButtonHeight - bottomPadding;
+            int gridHeight = Math.Max(220, bottomRowTop - gridTop - 18);
+            int comboWidth = (ClientSize.Width - (sidePadding * 2) - (filterGap * 2)) / 3;
 
-            string studentId = textBox1.Text.Trim();
-            LoadStudentResult(studentId);
+            btnClear.SetBounds(sidePadding, topPadding, headerButtonWidth, headerButtonHeight);
+            btnRefresh.SetBounds(ClientSize.Width - sidePadding - 150, topPadding, 150, headerButtonHeight);
+
+            labelTitle.AutoSize = true;
+            labelTitle.Location = new Point((ClientSize.Width - labelTitle.PreferredWidth) / 2, titleTop);
+
+            labelBatch.Location = new Point(sidePadding, filterLabelTop);
+            batchFilterCombo.SetBounds(sidePadding, filterTop, comboWidth, 36);
+
+            labelExam.Location = new Point(batchFilterCombo.Right + filterGap, filterLabelTop);
+            examFilterCombo.SetBounds(batchFilterCombo.Right + filterGap, filterTop, comboWidth, 36);
+
+            labelStudent.Location = new Point(examFilterCombo.Right + filterGap, filterLabelTop);
+            studentFilterCombo.SetBounds(examFilterCombo.Right + filterGap, filterTop, comboWidth, 36);
+
+            dataGridViewMaster.SetBounds(sidePadding, gridTop, ClientSize.Width - (sidePadding * 2), gridHeight);
+
+            button1.SetBounds(sidePadding, bottomRowTop, 180, bottomButtonHeight);
+            button2.SetBounds(ClientSize.Width - sidePadding - 190, bottomRowTop, 190, bottomButtonHeight);
+
+            label2.AutoSize = false;
+            label2.SetBounds((ClientSize.Width / 2) - 135, bottomRowTop + 10, 270, 30);
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
+        private void single_GPA_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBox1.Text))
-            {
-                MessageBox.Show("Enter Student ID first.");
-                return;
-            }
+            ApplyModernLayout();
+            Resize += (s, args) => ArrangeResponsiveLayout();
+            LoadBatchFilter();
+            ResetView();
+        }
 
+        private void ResetView()
+        {
+            _loadingFilters = true;
             try
             {
+                batchFilterCombo.SelectedIndex = -1;
+                examFilterCombo.DataSource = null;
+                studentFilterCombo.DataSource = null;
+                examFilterCombo.Items.Clear();
+                studentFilterCombo.Items.Clear();
+                examFilterCombo.Text = string.Empty;
+                studentFilterCombo.Text = string.Empty;
+                examFilterCombo.Enabled = false;
+                studentFilterCombo.Enabled = false;
+                dataGridViewMaster.DataSource = null;
+                label2.Text = "GPA = ?";
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
+
+        private void LoadBatchFilter()
+        {
+            _loadingFilters = true;
+            try
+            {
+                DataTable table = new DataTable();
                 using (SqlConnection conn = connection_class.GetConnection())
+                using (SqlDataAdapter adapter = new SqlDataAdapter(
+                    "SELECT DISTINCT std_batch_code FROM student_record WHERE std_batch_code IS NOT NULL AND LTRIM(RTRIM(std_batch_code)) <> '' ORDER BY std_batch_code", conn))
                 {
-                    conn.Open();
-                    string query = @"
-    SELECT x.ex_name, s.percentage, e.unit
-    FROM score s
-    INNER JOIN tbl_exam_settings e 
-        ON s.exam_fk_id = e.ex_id
-    INNER JOIN tbl_exams x
-        ON e.ex_id = x.ex_id
-    WHERE s.percentagestud_fk_id = @StudentId";
+                    adapter.Fill(table);
+                }
 
+                batchFilterCombo.DataSource = table;
+                batchFilterCombo.DisplayMember = "std_batch_code";
+                batchFilterCombo.ValueMember = "std_batch_code";
+                batchFilterCombo.SelectedIndex = -1;
+                batchFilterCombo.Text = "Select Batch";
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
 
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@StudentId", textBox1.Text);
+        private void LoadExamFilter(string batchCode)
+        {
+            _loadingFilters = true;
+            try
+            {
+                DataTable table = new DataTable();
+                using (SqlConnection conn = connection_class.GetConnection())
+                using (SqlDataAdapter adapter = new SqlDataAdapter(@"
+                    SELECT DISTINCT e.ex_id, e.ex_name
+                    FROM score s
+                    INNER JOIN tbl_exams e ON s.exam_fk_id = e.ex_id
+                    INNER JOIN student_record sr ON s.percentagestud_fk_id = sr.std_id
+                    WHERE sr.std_batch_code = @batchCode
+                    ORDER BY e.ex_name", conn))
+                {
+                    adapter.SelectCommand.Parameters.AddWithValue("@batchCode", batchCode);
+                    adapter.Fill(table);
+                }
 
-                    SqlDataReader reader = cmd.ExecuteReader();
+                examFilterCombo.DataSource = table;
+                examFilterCombo.DisplayMember = "ex_name";
+                examFilterCombo.ValueMember = "ex_id";
+                examFilterCombo.SelectedIndex = -1;
+                examFilterCombo.Text = "Select Exam";
+                examFilterCombo.Enabled = table.Rows.Count > 0;
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
 
-                    DataTable dt = new DataTable();
-                    dt.Columns.Add("Course");
-                    dt.Columns.Add("Grade");
-                    dt.Columns.Add("Grade Point", typeof(int));
-                    dt.Columns.Add("Credit Unit", typeof(int));
-                    dt.Columns.Add("Quality Point", typeof(int));
+        private void LoadStudentFilter(string batchCode, int examId)
+        {
+            _loadingFilters = true;
+            try
+            {
+                DataTable table = new DataTable();
+                using (SqlConnection conn = connection_class.GetConnection())
+                using (SqlDataAdapter adapter = new SqlDataAdapter(@"
+                    SELECT DISTINCT
+                        sr.std_id,
+                        sr.std_name + ' (' + CAST(sr.std_id AS NVARCHAR(20)) + ')' AS student_display
+                    FROM score s
+                    INNER JOIN student_record sr ON s.percentagestud_fk_id = sr.std_id
+                    WHERE sr.std_batch_code = @batchCode
+                      AND s.exam_fk_id = @examId
+                    ORDER BY student_display", conn))
+                {
+                    adapter.SelectCommand.Parameters.AddWithValue("@batchCode", batchCode);
+                    adapter.SelectCommand.Parameters.AddWithValue("@examId", examId);
+                    adapter.Fill(table);
+                }
 
-                    while (reader.Read())
+                studentFilterCombo.DataSource = table;
+                studentFilterCombo.DisplayMember = "student_display";
+                studentFilterCombo.ValueMember = "std_id";
+                studentFilterCombo.SelectedIndex = -1;
+                studentFilterCombo.Text = "Select Student";
+                studentFilterCombo.Enabled = table.Rows.Count > 0;
+            }
+            finally
+            {
+                _loadingFilters = false;
+            }
+        }
+
+        private void LoadStudentResult(int studentId, int examId)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Course");
+            table.Columns.Add("Grade");
+            table.Columns.Add("Grade Point", typeof(int));
+            table.Columns.Add("Credit Unit", typeof(int));
+            table.Columns.Add("Quality Point", typeof(int));
+
+            using (SqlConnection conn = connection_class.GetConnection())
+            {
+                conn.Open();
+                string query = @"
+                    SELECT e.ex_name, s.percentage, es.unit
+                    FROM score s
+                    INNER JOIN tbl_exams e ON s.exam_fk_id = e.ex_id
+                    INNER JOIN tbl_exam_settings es ON e.ex_id = es.ex_id
+                    WHERE s.percentagestud_fk_id = @studentId
+                      AND s.exam_fk_id = @examId";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@studentId", studentId);
+                    cmd.Parameters.AddWithValue("@examId", examId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        string course = reader["ex_name"].ToString();
-                        double score = Convert.ToDouble(reader["score"]);
-                        int unit = Convert.ToInt32(reader["unit"]);
-
-                        string grade = GetGrade(score);
-                        int gradePoint = GetGradePoint(grade);
-                        int qualityPoint = gradePoint * unit;
-
-                        dt.Rows.Add(course, grade, gradePoint, unit, qualityPoint);
+                        while (reader.Read())
+                        {
+                            string course = reader["ex_name"].ToString();
+                            double percentage = reader["percentage"] != DBNull.Value ? Convert.ToDouble(reader["percentage"]) : 0;
+                            int unit = reader["unit"] != DBNull.Value ? Convert.ToInt32(reader["unit"]) : 0;
+                            string grade = GetGrade(percentage);
+                            int gradePoint = GetGradePoint(grade);
+                            int qualityPoint = gradePoint * unit;
+                            table.Rows.Add(course, grade, gradePoint, unit, qualityPoint);
+                        }
                     }
-
-                    reader.Close();
-                    dataGridViewMaster.DataSource = dt;
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
 
+            dataGridViewMaster.DataSource = table;
 
+            int totalQualityPoints = table.AsEnumerable().Sum(r => r.Field<int?>("Quality Point") ?? 0);
+            int totalUnits = table.AsEnumerable().Sum(r => r.Field<int?>("Credit Unit") ?? 0);
+            double gpa = totalUnits > 0 ? (double)totalQualityPoints / totalUnits : 0;
+            label2.Text = $"GPA = {gpa:F2}";
         }
 
-        private string GetGrade(double percentage)
+        private static string GetGrade(double percentage)
         {
-            if (percentage >= 70)
-                return "A";
-            else if (percentage >= 60)
-                return "B";
-            else if (percentage >= 50)
-                return "C";
-            else if (percentage >= 45)
-                return "D";
-            else if (percentage >= 40)
-                return "E";
-            else
-                return "F";
+            if (percentage >= 70) return "A";
+            if (percentage >= 60) return "B";
+            if (percentage >= 50) return "C";
+            if (percentage >= 45) return "D";
+            if (percentage >= 40) return "E";
+            return "F";
         }
 
-        private int GetGradePoint(string grade)
+        private static int GetGradePoint(string grade)
         {
             switch (grade)
             {
@@ -126,75 +279,77 @@ namespace Quiz_App
             }
         }
 
-        private void LoadStudentResult(string studentId)
+        private bool TryGetSelectedBatch(out string batchCode)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Student ID");
-            dt.Columns.Add("Course");
-            dt.Columns.Add("Grade");
-            dt.Columns.Add("Grade Point", typeof(int));
-            dt.Columns.Add("Credit Unit", typeof(int));
-            dt.Columns.Add("Quality Point", typeof(int));
+            batchCode = batchFilterCombo.SelectedValue?.ToString();
+            return !string.IsNullOrWhiteSpace(batchCode);
+        }
 
-            using (SqlConnection conn = connection_class.GetConnection())
+        private bool TryGetSelectedExam(out int examId)
+        {
+            examId = 0;
+            return examFilterCombo.SelectedValue != null && int.TryParse(examFilterCombo.SelectedValue.ToString(), out examId);
+        }
+
+        private bool TryGetSelectedStudent(out int studentId)
+        {
+            studentId = 0;
+            return studentFilterCombo.SelectedValue != null && int.TryParse(studentFilterCombo.SelectedValue.ToString(), out studentId);
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            ResetView();
+            LoadBatchFilter();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            if (TryGetSelectedStudent(out int studentId) && TryGetSelectedExam(out int examId))
             {
-                conn.Open();
-
-                // join score with exams and exam_settings to get percentage + course name + credit unit
-                string query = @"
-            SELECT e.ex_name, s.percentage, es.unit
-            FROM score s
-            INNER JOIN tbl_exams e ON s.exam_fk_id = e.ex_id
-            INNER JOIN tbl_exam_settings es ON e.ex_id = es.ex_id
-            WHERE s.percentagestud_fk_id = @studentId";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@studentId", textBox1.Text.Trim());
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string course = reader["ex_name"].ToString();
-
-                            // safely handle NULLs
-                            double percentage = reader["percentage"] != DBNull.Value ? Convert.ToDouble(reader["percentage"]) : 0;
-                            int unit = reader["unit"] != DBNull.Value ? Convert.ToInt32(reader["unit"]) : 0;
-
-                            // convert percentage → grade + gradePoint
-                            string grade = GetGrade(percentage);
-                            int gradePoint = GetGradePoint(grade);
-
-                            // calculate quality point = gradePoint × unit
-                            int qualityPoint = gradePoint * unit;
-
-                            // add row to datatable
-                            dt.Rows.Add(course, grade, gradePoint, unit, qualityPoint);
-                        }
-                    }
-                }
+                LoadStudentResult(studentId, examId);
+                return;
             }
 
-            // bind to grid
-            dataGridViewMaster.DataSource = dt;
+            MessageBox.Show("Select Batch, Exam, and Student first.", "Refresh", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
-            // calculate GPA safely (nulls = 0)
-            int totalQualityPoints = dt.AsEnumerable()
-                .Sum(r => r.Field<int?>("Quality Point") ?? 0);
-
-            int totalUnits = dt.AsEnumerable()
-                .Sum(r => r.Field<int?>("Credit Unit") ?? 0);
-
-            double gpa = totalUnits > 0 ? (double)totalQualityPoints / totalUnits : 0;
-
-            label2.Text = $"GPA = {gpa:F2}";
-
-    }
-
-        private void pictureBox8_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            if (!TryGetSelectedStudent(out int studentId) || !TryGetSelectedExam(out int examId))
+            {
+                MessageBox.Show("Select Batch, Exam, and Student first.", "Load GPA", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            LoadStudentResult(studentId, examId);
+        }
+
+        private void batchFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loadingFilters || !TryGetSelectedBatch(out string batchCode))
+            {
+                return;
+            }
+
+            dataGridViewMaster.DataSource = null;
+            label2.Text = "GPA = ?";
+            studentFilterCombo.DataSource = null;
+            studentFilterCombo.Items.Clear();
+            studentFilterCombo.Enabled = false;
+            LoadExamFilter(batchCode);
+        }
+
+        private void examFilterCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loadingFilters || !TryGetSelectedBatch(out string batchCode) || !TryGetSelectedExam(out int examId))
+            {
+                return;
+            }
+
+            dataGridViewMaster.DataSource = null;
+            label2.Text = "GPA = ?";
+            LoadStudentFilter(batchCode, examId);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -207,53 +362,42 @@ namespace Quiz_App
                     return;
                 }
 
-                using (SaveFileDialog sfd = new SaveFileDialog()
-                { Filter = "Excel Workbook|*.xlsx", FileName = "StudentGPA.xlsx" })
+                using (SaveFileDialog sfd = new SaveFileDialog { Filter = "Excel Workbook|*.xlsx", FileName = "StudentGPA.xlsx" })
                 {
-                    if (sfd.ShowDialog() == DialogResult.OK)
+                    if (sfd.ShowDialog() != DialogResult.OK)
                     {
-                        using (var workbook = new ClosedXML.Excel.XLWorkbook())
+                        return;
+                    }
+
+                    using (XLWorkbook workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("GPA Records");
+
+                        for (int i = 0; i < dataGridViewMaster.Columns.Count; i++)
                         {
-                            var worksheet = workbook.Worksheets.Add("GPA Records");
-
-                            // Add headers
-                            for (int i = 0; i < dataGridViewMaster.Columns.Count; i++)
-                            {
-                                worksheet.Cell(1, i + 1).Value = dataGridViewMaster.Columns[i].HeaderText;
-                            }
-
-                            // Add data
-                            for (int i = 0; i < dataGridViewMaster.Rows.Count; i++)
-                            {
-                                for (int j = 0; j < dataGridViewMaster.Columns.Count; j++)
-                                {
-                                    worksheet.Cell(i + 2, j + 1).Value =
-                                        dataGridViewMaster.Rows[i].Cells[j].Value?.ToString();
-                                }
-                            }
-
-                            // Add GPA at the bottom
-                            worksheet.Cell(dataGridViewMaster.Rows.Count + 3, 1).Value = "Calculated GPA:";
-                            worksheet.Cell(dataGridViewMaster.Rows.Count + 3, 2).Value = label2.Text;
-
-                            workbook.SaveAs(sfd.FileName);
+                            worksheet.Cell(1, i + 1).Value = dataGridViewMaster.Columns[i].HeaderText;
                         }
 
-                        MessageBox.Show("Exported successfully!", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        for (int i = 0; i < dataGridViewMaster.Rows.Count; i++)
+                        {
+                            for (int j = 0; j < dataGridViewMaster.Columns.Count; j++)
+                            {
+                                worksheet.Cell(i + 2, j + 1).Value = dataGridViewMaster.Rows[i].Cells[j].Value?.ToString();
+                            }
+                        }
+
+                        worksheet.Cell(dataGridViewMaster.Rows.Count + 3, 1).Value = "Calculated GPA:";
+                        worksheet.Cell(dataGridViewMaster.Rows.Count + 3, 2).Value = label2.Text;
+                        workbook.SaveAs(sfd.FileName);
                     }
+
+                    MessageBox.Show("Exported successfully!", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void pictureBox7_Click(object sender, EventArgs e)
-        {
-            GPA w = new GPA();
-            w.Show();
-            this.Hide();
         }
     }
 }

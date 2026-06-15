@@ -49,7 +49,7 @@
             this.label7.BackColor = System.Drawing.Color.Silver;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.Maroon;
-            this.label7.Location = new System.Drawing.Point(400, 264);
+            this.label7.Location = new System.Drawing.Point(821, 291);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(196, 23);
             this.label7.TabIndex = 28;
@@ -61,7 +61,7 @@
             this.label4.BackColor = System.Drawing.Color.Silver;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Maroon;
-            this.label4.Location = new System.Drawing.Point(73, 258);
+            this.label4.Location = new System.Drawing.Point(75, 306);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(242, 23);
             this.label4.TabIndex = 29;
@@ -73,9 +73,9 @@
             this.label3.BackColor = System.Drawing.Color.Gray;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Maroon;
-            this.label3.Location = new System.Drawing.Point(132, 264);
+            this.label3.Location = new System.Drawing.Point(401, 254);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(10, 10);
+            this.label3.Size = new System.Drawing.Size(385, 96);
             this.label3.TabIndex = 33;
             this.label3.Text = "MANAGE SUBSCRIPTION";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -83,9 +83,9 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(148, 264);
+            this.pictureBox2.Location = new System.Drawing.Point(532, 155);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(10, 10);
+            this.pictureBox2.Size = new System.Drawing.Size(132, 96);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 32;
             this.pictureBox2.TabStop = false;
@@ -94,7 +94,7 @@
             // pictureBox9
             // 
             this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
-            this.pictureBox9.Location = new System.Drawing.Point(417, 102);
+            this.pictureBox9.Location = new System.Drawing.Point(838, 129);
             this.pictureBox9.Name = "pictureBox9";
             this.pictureBox9.Size = new System.Drawing.Size(156, 129);
             this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -139,10 +139,10 @@
             // 
             // app_settings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(721, 383);
+            this.ClientSize = new System.Drawing.Size(1017, 383);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox9);

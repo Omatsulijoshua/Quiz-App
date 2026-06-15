@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,18 +13,58 @@ using System.IO;
 
 namespace Quiz_App
 {
-    public partial class add_short_answer_questions : Form
+    public partial class add_short_answer_questions : BaseForm
     {
+        private Label answerFormatHintLabel;
+
         public add_short_answer_questions()
         {
             InitializeComponent();
         }
 
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
+
         private void add_short_answer_questions_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;   // remove close/min/max buttons
+            this.WindowState = FormWindowState.Maximized;  // maximize to fill screen
+            this.TopMost = true;                           // keep exam window on top
+
+            add_short_answer_questions.ScaleForm(this);
             label9.Text = "";
             LoadExams();
             LoadShortAnswers(); // 
+            ModernUi.StyleDataGridView(dataGridView1);
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.MultiSelect = true;
+            dataGridView1.ReadOnly = true;
+            dataGridView1.AllowUserToAddRows = false;
+            txtShortAnswer.CharacterCasing = CharacterCasing.Upper;
+            EnsureAnswerFormatHint();
         }
         // class-level variables (so all buttons can use them)
         private byte[] imageData = null;       // holds the image in memory
@@ -39,6 +79,7 @@ namespace Quiz_App
             pictureBox1.Image = null;
             imageData = null;
             selectedQuestionId = -1;
+            selectedSaId = -1;
         }
 
         private void add_question_Click(object sender, EventArgs e)
@@ -56,7 +97,7 @@ namespace Quiz_App
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@examId", int.Parse(label9.Text));
                 cmd.Parameters.AddWithValue("@title", txtQuestion.Text);
-                cmd.Parameters.AddWithValue("@answer", txtShortAnswer.Text);
+                cmd.Parameters.AddWithValue("@answer", txtShortAnswer.Text.ToUpperInvariant());
 
                 if (imageData != null)
                     cmd.Parameters.AddWithValue("@img", imageData);
@@ -92,7 +133,7 @@ namespace Quiz_App
 
             int examId = Convert.ToInt32(comboBox2.SelectedValue);
             string question = txtQuestion.Text.Trim();
-            string answer = txtShortAnswer.Text.Trim();
+            string answer = txtShortAnswer.Text.Trim().ToUpperInvariant();
 
             byte[] imgData = null;
             if (pictureBox1.Image != null)
@@ -134,24 +175,82 @@ namespace Quiz_App
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (selectedQuestionId <= 0)
+            if (dataGridView1.SelectedRows.Count > 0)
             {
-                MessageBox.Show("Please select a question to delete.");
+                DialogResult result = MessageBox.Show(
+                    $"Are you sure you want to delete {dataGridView1.SelectedRows.Count} selected short-answer question(s)?",
+                    "Confirm Delete",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                using (SqlConnection conn = connection_class.GetConnection())
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            foreach (DataGridViewRow row in dataGridView1.SelectedRows)
+                            {
+                                if (row.IsNewRow || row.Cells["sa_id"].Value == null)
+                                {
+                                    continue;
+                                }
+
+                                using (SqlCommand cmd = new SqlCommand("DELETE FROM tbl_shortanswer WHERE sa_id = @id", conn, transaction))
+                                {
+                                    cmd.Parameters.AddWithValue("@id", Convert.ToInt32(row.Cells["sa_id"].Value));
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            MessageBox.Show("Error deleting question(s): " + ex.Message);
+                            return;
+                        }
+                    }
+                }
+
+                MessageBox.Show("Selected question(s) deleted successfully!");
+            }
+            else if (selectedSaId > 0)
+            {
+                using (SqlConnection conn = connection_class.GetConnection())
+                {
+                    string query = "DELETE FROM tbl_shortanswer WHERE sa_id = @id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@id", selectedSaId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Question Deleted Successfully!");
+            }
+            else
+            {
+                MessageBox.Show("Please select one or more questions to delete.");
                 return;
             }
 
-            using (SqlConnection conn = connection_class.GetConnection())
-            {
-                string query = "DELETE FROM tbl_shortanswer WHERE sa_id = @id";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", selectedQuestionId);
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-
-            MessageBox.Show("Question Deleted Successfully!");
             ClearFields();
+            if (int.TryParse(label9.Text, out int examId))
+            {
+                LoadShortAnswers(examId);
+            }
+            else
+            {
+                LoadShortAnswers();
+            }
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -279,6 +378,7 @@ namespace Quiz_App
                     }
 
                     dataGridView1.DataSource = displayTable;
+                    dataGridView1.AutoGenerateColumns = true;
 
                     // Convert image column style
                     if (dataGridView1.Columns["ques_image"] is DataGridViewImageColumn imgCol)
@@ -294,6 +394,8 @@ namespace Quiz_App
 
                     // Make rows tall enough for thumbnail
                     dataGridView1.RowTemplate.Height = 80;
+                    ModernUi.StyleDataGridView(dataGridView1);
+                    dataGridView1.ClearSelection();
                 }
             }
             catch (Exception ex)
@@ -313,12 +415,17 @@ namespace Quiz_App
                 if (row.Cells["sa_id"].Value != null)
                 {
                     selectedSaId = Convert.ToInt32(row.Cells["sa_id"].Value);
+                    selectedQuestionId = selectedSaId;
                 }
 
                 // Copy text fields
                 txtQuestion.Text = row.Cells["ques_title"].Value?.ToString();
                 txtShortAnswer.Text = row.Cells["correct_answer"].Value?.ToString();
                 label9.Text = row.Cells["exam_id"].Value?.ToString(); // exam_id
+                if (row.Cells["exam_id"].Value != null)
+                {
+                    comboBox2.SelectedValue = row.Cells["exam_id"].Value;
+                }
 
                 // Copy image safely
                 if (row.Cells["ques_image"].Value != null && row.Cells["ques_image"].Value != DBNull.Value)
@@ -359,7 +466,7 @@ namespace Quiz_App
         {
             if (comboBox2.SelectedValue == null)
             {
-                MessageBox.Show("⚠️ Please select an exam first.");
+                MessageBox.Show("?? Please select an exam first.");
                 return;
             }
 
@@ -371,7 +478,7 @@ namespace Quiz_App
                 {
                     conn.Open();
 
-                    // 1️⃣ Insert all questions for this exam into tbl_past_shortanswer
+                    // 1?? Insert all questions for this exam into tbl_past_shortanswer
                     string insertQuery = @"
                 INSERT INTO tbl_past_shortanswer (exam_id, ques_title, correct_answer, ques_image)
                 SELECT exam_id, ques_title, correct_answer, ques_image
@@ -383,10 +490,10 @@ namespace Quiz_App
                         cmd.Parameters.AddWithValue("@examId", examId);
                         int rowsMoved = cmd.ExecuteNonQuery();
 
-                        MessageBox.Show($"✅ {rowsMoved} question(s) moved to Past Questions.");
+                        MessageBox.Show($"? {rowsMoved} question(s) moved to Past Questions.");
                     }
 
-                    // 2️⃣ (Optional) Delete from tbl_shortanswer after moving
+                    // 2?? (Optional) Delete from tbl_shortanswer after moving
                     string deleteQuery = "DELETE FROM tbl_shortanswer WHERE exam_id = @examId";
                     using (SqlCommand deleteCmd = new SqlCommand(deleteQuery, conn))
                     {
@@ -402,7 +509,7 @@ namespace Quiz_App
             }
             catch (Exception ex)
             {
-                MessageBox.Show("❌ Error moving questions: " + ex.Message);
+                MessageBox.Show("? Error moving questions: " + ex.Message);
             }
         }
 
@@ -429,7 +536,7 @@ namespace Quiz_App
 
                 File.WriteAllText(saveFileDialog.FileName, sb.ToString());
 
-                MessageBox.Show("✅ Sample file created: " + saveFileDialog.FileName, "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("? Sample file created: " + saveFileDialog.FileName, "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -461,31 +568,64 @@ namespace Quiz_App
                         if (values.Length < 2) continue;
 
                         string ques_title = values[0].Trim();
-                        string correct_answer = values[1].Trim();
+                        string correct_answer = values[1].Trim().ToUpperInvariant();
                         string ques_image = values.Length > 2 ? values[2].Trim() : null;
+                        byte[] importImage = null;
+                        if (!string.IsNullOrWhiteSpace(ques_image) && File.Exists(ques_image))
+                        {
+                            importImage = File.ReadAllBytes(ques_image);
+                        }
 
                         using (SqlConnection con = connection_class.GetConnection())
                         {
                             con.Open();
-                            string query = "INSERT INTO tbl_shortanswer (ques_title, correct_answer, ques_image) VALUES (@title, @answer, @image)";
+                            string query = "INSERT INTO tbl_shortanswer (exam_id, ques_title, correct_answer, ques_image) VALUES (@examId, @title, @answer, @image)";
                             using (SqlCommand cmd = new SqlCommand(query, con))
                             {
+                                cmd.Parameters.AddWithValue("@examId", Convert.ToInt32(comboBox2.SelectedValue));
                                 cmd.Parameters.AddWithValue("@title", ques_title);
                                 cmd.Parameters.AddWithValue("@answer", correct_answer);
-                                cmd.Parameters.AddWithValue("@image", (object)ques_image ?? DBNull.Value);
+                                cmd.Parameters.AddWithValue("@image", (object)importImage ?? DBNull.Value);
 
                                 cmd.ExecuteNonQuery();
                             }
                         }
                     }
 
-                    MessageBox.Show("✅ Questions added successfully from Excel/CSV!");
+                    MessageBox.Show("? Questions added successfully from Excel/CSV!");
+                    if (comboBox2.SelectedValue != null)
+                    {
+                        LoadShortAnswers(Convert.ToInt32(comboBox2.SelectedValue));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("❌ Error importing file: " + ex.Message);
+                    MessageBox.Show("? Error importing file: " + ex.Message);
                 }
             }
+        }
+
+        private void EnsureAnswerFormatHint()
+        {
+            if (answerFormatHintLabel == null)
+            {
+                answerFormatHintLabel = new Label
+                {
+                    AutoSize = false,
+                    BackColor = Color.Transparent
+                };
+                panelShortAnswer.Controls.Add(answerFormatHintLabel);
+                answerFormatHintLabel.BringToFront();
+            }
+
+            answerFormatHintLabel.Text = "Caution: Answer must be in ALL CAPITAL LETTERS.";
+            answerFormatHintLabel.ForeColor = ModernUi.Warning;
+            answerFormatHintLabel.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold, GraphicsUnit.Point);
+            answerFormatHintLabel.Location = new Point(txtShortAnswer.Left, txtShortAnswer.Bottom + 10);
+            answerFormatHintLabel.Size = new Size(Math.Max(320, txtShortAnswer.Width), 24);
+            answerFormatHintLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            answerFormatHintLabel.Parent = panelShortAnswer;
+            answerFormatHintLabel.BringToFront();
         }
     }
     }
@@ -495,6 +635,7 @@ namespace Quiz_App
 
    
     
+
 
 
 

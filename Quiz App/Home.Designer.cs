@@ -45,6 +45,7 @@ namespace Quiz_App
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(210)))), ((int)(((byte)(145)))));
+            this.panel1.ForeColor = System.Drawing.Color.Green;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(121, 15);
@@ -74,11 +75,11 @@ namespace Quiz_App
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Red;
-            this.label2.Location = new System.Drawing.Point(257, 322);
+            this.label2.Location = new System.Drawing.Point(271, 368);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(358, 25);
+            this.label2.Size = new System.Drawing.Size(320, 25);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Welcome To Moses And Grace CBT";
+            this.label2.Text = "Welcome To Moses & Grace CBT\r\n";
             // 
             // timer1
             // 
@@ -89,9 +90,9 @@ namespace Quiz_App
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(221, 74);
+            this.pictureBox1.Location = new System.Drawing.Point(192, 70);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(409, 245);
+            this.pictureBox1.Size = new System.Drawing.Size(447, 295);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
@@ -110,8 +111,8 @@ namespace Quiz_App
             // 
             // Home
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(842, 508);

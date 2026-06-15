@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,11 +14,37 @@ using System.IO;
 
 namespace Quiz_App
 {
-    public partial class past_questions_view : Form
+    public partial class past_questions_view : BaseForm
     {
         public past_questions_view()
         {
             InitializeComponent();
+        }
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void pictureBox8_Click(object sender, EventArgs e)
@@ -75,7 +101,7 @@ WHERE 1=1";
 
                 dataGridView1.DataSource = dt;
 
-                // Optional: format the columns
+                // Optional: BaseFormat the columns
                 if (dataGridView1.Columns["Date Added"] != null)
                 {
                     dataGridView1.Columns["Date Added"].DefaultCellStyle.Format = "dd-MMM-yyyy";
@@ -107,7 +133,7 @@ WHERE 1=1";
             {
                 con.Open();
 
-                // ✅ Order exams alphabetically by name
+                // ? Order exams alphabetically by name
                 SqlDataAdapter da = new SqlDataAdapter(
                     "SELECT ex_id, ex_name FROM tbl_exams ORDER BY ex_name ASC", con);
                 DataTable dt = new DataTable();
@@ -133,6 +159,7 @@ WHERE 1=1";
 
         private void past_questions_view_Load_1(object sender, EventArgs e)
         {
+            past_questions_view.ScaleForm(this);
             LoadExamsComboBox();      // populate ComboBox once
             BindPastQuestionsGrid();  // load all questions initially
         }
@@ -186,7 +213,7 @@ WHERE 1=1";
                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName + ".xlsx");
                 wb.SaveAs(path);
 
-                MessageBox.Show("✅ Data exported successfully to: " + path, "Export Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("? Data exported successfully to: " + path, "Export Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -273,7 +300,7 @@ WHERE 1=1";
 
                 try
                 {
-                    // 1️⃣ Insert questions back into tbl_questions
+                    // 1?? Insert questions back into tbl_questions
                     string insertQuery = @"
 INSERT INTO tbl_questions
     (q_title, q_opA, q_opB, q_opC, q_opD, q_correctOpn, q_correctDate, ad_id_fk, ex_id_fk, q_image)
@@ -287,7 +314,7 @@ WHERE ex_id_fk = @ExamId";
                         cmd.ExecuteNonQuery();
                     }
 
-                    // 2️⃣ Delete the questions from tbl_past_questions
+                    // 2?? Delete the questions from tbl_past_questions
                     string deleteQuery = "DELETE FROM tbl_past_questions WHERE ex_id_fk = @ExamId";
                     using (SqlCommand cmd = new SqlCommand(deleteQuery, con, transaction))
                     {
@@ -310,3 +337,4 @@ WHERE ex_id_fk = @ExamId";
         }
     }
 }
+

@@ -30,7 +30,6 @@ namespace Quiz_App
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(add_student));
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -42,8 +41,6 @@ namespace Quiz_App
             this.quizAppDataSet3 = new Quiz_App.quizAppDataSet3();
             this.student_recordTableAdapter = new Quiz_App.quizAppDataSet3TableAdapters.student_recordTableAdapter();
             this.button2 = new System.Windows.Forms.Button();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.quizAppDataSet5 = new Quiz_App.quizAppDataSet5();
             this.studentrecordBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -71,8 +68,6 @@ namespace Quiz_App
             this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.studentrecordBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentrecordBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -86,7 +81,7 @@ namespace Quiz_App
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label2.Location = new System.Drawing.Point(59, 90);
+            this.label2.Location = new System.Drawing.Point(42, 90);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(130, 24);
             this.label2.TabIndex = 0;
@@ -97,7 +92,7 @@ namespace Quiz_App
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label3.Location = new System.Drawing.Point(8, 155);
+            this.label3.Location = new System.Drawing.Point(8, 165);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(249, 24);
             this.label3.TabIndex = 0;
@@ -108,7 +103,7 @@ namespace Quiz_App
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label4.Location = new System.Drawing.Point(59, 218);
+            this.label4.Location = new System.Drawing.Point(42, 218);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(161, 24);
             this.label4.TabIndex = 0;
@@ -117,9 +112,9 @@ namespace Quiz_App
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(260, 95);
+            this.textBox1.Location = new System.Drawing.Point(260, 90);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(873, 38);
+            this.textBox1.Size = new System.Drawing.Size(660, 38);
             this.textBox1.TabIndex = 1;
             // 
             // textBox2
@@ -127,7 +122,7 @@ namespace Quiz_App
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox2.Location = new System.Drawing.Point(260, 155);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(873, 38);
+            this.textBox2.Size = new System.Drawing.Size(660, 38);
             this.textBox2.TabIndex = 1;
             // 
             // textBox3
@@ -135,14 +130,14 @@ namespace Quiz_App
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.Location = new System.Drawing.Point(260, 218);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(873, 38);
+            this.textBox3.Size = new System.Drawing.Size(660, 38);
             this.textBox3.TabIndex = 1;
             // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(755, 289);
+            this.button1.Location = new System.Drawing.Point(243, 293);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(154, 67);
             this.button1.TabIndex = 2;
@@ -168,37 +163,13 @@ namespace Quiz_App
             // 
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(985, 474);
+            this.button2.Location = new System.Drawing.Point(737, 293);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(166, 67);
             this.button2.TabIndex = 4;
             this.button2.Text = "Delete Multiple Student";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(12, 9);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(44, 47);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox4.TabIndex = 5;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(1168, 1);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(56, 55);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox3.TabIndex = 6;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
             // 
             // label5
             // 
@@ -237,9 +208,9 @@ namespace Quiz_App
             this.stdpasswordDataGridViewTextBoxColumn,
             this.stdidfkDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.studentrecordBindingSource;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 288);
+            this.dataGridView1.Location = new System.Drawing.Point(944, 67);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(540, 262);
+            this.dataGridView1.Size = new System.Drawing.Size(540, 341);
             this.dataGridView1.TabIndex = 8;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick_1);
             // 
@@ -291,7 +262,7 @@ namespace Quiz_App
             // 
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(985, 289);
+            this.button3.Location = new System.Drawing.Point(403, 293);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(156, 67);
             this.button3.TabIndex = 10;
@@ -303,7 +274,7 @@ namespace Quiz_App
             // 
             this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(755, 474);
+            this.button5.Location = new System.Drawing.Point(565, 293);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(154, 67);
             this.button5.TabIndex = 28;
@@ -318,7 +289,7 @@ namespace Quiz_App
             this.button4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(583, 873);
+            this.button4.Location = new System.Drawing.Point(187, 941);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(632, 25);
             this.button4.TabIndex = 29;
@@ -328,26 +299,26 @@ namespace Quiz_App
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(17, 608);
+            this.dataGridView2.Location = new System.Drawing.Point(944, 541);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(544, 259);
+            this.dataGridView2.Size = new System.Drawing.Size(544, 374);
             this.dataGridView2.TabIndex = 30;
             this.dataGridView2.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellContentClick);
             // 
             // textBox4
             // 
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox4.Location = new System.Drawing.Point(818, 637);
+            this.textBox4.Location = new System.Drawing.Point(280, 477);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(406, 38);
+            this.textBox4.Size = new System.Drawing.Size(623, 38);
             this.textBox4.TabIndex = 31;
             // 
             // textBox5
             // 
             this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(818, 719);
+            this.textBox5.Location = new System.Drawing.Point(280, 559);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(406, 38);
+            this.textBox5.Size = new System.Drawing.Size(623, 38);
             this.textBox5.TabIndex = 31;
             // 
             // label1
@@ -355,7 +326,7 @@ namespace Quiz_App
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(559, 637);
+            this.label1.Location = new System.Drawing.Point(4, 477);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(253, 25);
             this.label1.TabIndex = 32;
@@ -366,7 +337,7 @@ namespace Quiz_App
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label6.Location = new System.Drawing.Point(567, 728);
+            this.label6.Location = new System.Drawing.Point(12, 568);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(217, 25);
             this.label6.TabIndex = 32;
@@ -376,9 +347,9 @@ namespace Quiz_App
             // 
             this.btnClearImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.btnClearImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearImage.Location = new System.Drawing.Point(818, 798);
+            this.btnClearImage.Location = new System.Drawing.Point(280, 653);
             this.btnClearImage.Name = "btnClearImage";
-            this.btnClearImage.Size = new System.Drawing.Size(171, 44);
+            this.btnClearImage.Size = new System.Drawing.Size(192, 44);
             this.btnClearImage.TabIndex = 33;
             this.btnClearImage.Text = "Fetch";
             this.btnClearImage.UseVisualStyleBackColor = false;
@@ -388,7 +359,7 @@ namespace Quiz_App
             // 
             this.button6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(12, 873);
+            this.button6.Location = new System.Drawing.Point(944, 933);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(165, 46);
             this.button6.TabIndex = 34;
@@ -400,7 +371,7 @@ namespace Quiz_App
             // 
             this.button7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(12, 556);
+            this.button7.Location = new System.Drawing.Point(967, 469);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(165, 46);
             this.button7.TabIndex = 35;
@@ -412,7 +383,7 @@ namespace Quiz_App
             // 
             this.button8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(167)))), ((int)(((byte)(203)))));
             this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button8.Location = new System.Drawing.Point(380, 558);
+            this.button8.Location = new System.Drawing.Point(1312, 471);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(172, 41);
             this.button8.TabIndex = 37;
@@ -422,10 +393,10 @@ namespace Quiz_App
             // 
             // add_student
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(1233, 920);
+            this.ClientSize = new System.Drawing.Size(1531, 999);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
@@ -440,8 +411,6 @@ namespace Quiz_App
             this.Controls.Add(this.button3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.pictureBox4);
-            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox3);
@@ -458,8 +427,6 @@ namespace Quiz_App
             this.Load += new System.EventHandler(this.add_student_Load);
             ((System.ComponentModel.ISupportInitialize)(this.studentrecordBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.quizAppDataSet5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentrecordBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -483,8 +450,6 @@ namespace Quiz_App
         private System.Windows.Forms.BindingSource studentrecordBindingSource;
         private quizAppDataSet3TableAdapters.student_recordTableAdapter student_recordTableAdapter;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label5;
         private quizAppDataSet5 quizAppDataSet5;
         private System.Windows.Forms.BindingSource studentrecordBindingSource1;

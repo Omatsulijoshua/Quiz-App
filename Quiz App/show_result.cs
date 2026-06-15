@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,15 +12,41 @@ using System.Data.SqlClient;
 
 namespace Quiz_App
 {
-    public partial class show_result : Form
+    public partial class show_result : BaseForm
     {
         public show_result()
         {
             InitializeComponent();
         }
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
 
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void show_result_Load(object sender, EventArgs e)
         {
+
+            show_result.ScaleForm(this);
             SqlConnection con = connection_class.GetConnection();
 
             try
@@ -62,22 +88,58 @@ namespace Quiz_App
 
             int examId = Convert.ToInt32(comboBoxExams.SelectedValue);
 
-            // Update show_result in the database
-            string query = "UPDATE tbl_exam_settings SET show_result = @showResult WHERE ex_id = @examId";
-
-            SqlConnection con = connection_class.GetConnection();
-            using (SqlCommand cmd = new SqlCommand(query, con))
+            using (SqlConnection con = connection_class.GetConnection())
             {
-                cmd.Parameters.AddWithValue("@showResult", showResult);
-                cmd.Parameters.AddWithValue("@examId", examId);
                 con.Open();
-                cmd.ExecuteNonQuery();
+
+                // ? Check if record exists
+                bool exists;
+                using (SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM tbl_exam_settings WHERE ex_id = @examId", con))
+                {
+                    checkCmd.Parameters.AddWithValue("@examId", examId);
+                    exists = (int)checkCmd.ExecuteScalar() > 0;
+                }
+
+                if (exists)
+                {
+                    // ? Update if record exists
+                    string updateQuery = "UPDATE tbl_exam_settings SET show_result = @showResult WHERE ex_id = @examId";
+                    using (SqlCommand cmd = new SqlCommand(updateQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@showResult", showResult);
+                        cmd.Parameters.AddWithValue("@examId", examId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                else
+                {
+                    // ? Insert a new record with default values for other NOT NULL fields
+                    // fetch duration if needed, else default to 0
+                    int durationMinutes = 0;
+                    string fetchDuration = "SELECT ISNULL(duration_minutes, 60) FROM tbl_exam_settings WHERE ex_id = @examId";
+                    using (SqlCommand durCmd = new SqlCommand(fetchDuration, con))
+                    {
+                        durCmd.Parameters.AddWithValue("@examId", examId);
+                        object dur = durCmd.ExecuteScalar();
+                        if (dur != null && dur != DBNull.Value)
+                            durationMinutes = Convert.ToInt32(dur);
+                    }
+
+                    string insertQuery = "INSERT INTO tbl_exam_settings (ex_id, total_questions, duration_minutes, show_result) VALUES (@examId, 0, @duration, @showResult)";
+                    using (SqlCommand cmd = new SqlCommand(insertQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@examId", examId);
+                        cmd.Parameters.AddWithValue("@duration", durationMinutes);
+                        cmd.Parameters.AddWithValue("@showResult", showResult);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
 
             MessageBox.Show("Show result setting saved.", "Success");
 
-            
-
+            // ? Refresh DataGridView
+            LoadGrid();
         }
 
         private void pictureBox8_Click(object sender, EventArgs e)
@@ -120,3 +182,4 @@ namespace Quiz_App
 
     }
 }
+

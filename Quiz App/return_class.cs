@@ -56,10 +56,10 @@ namespace Quiz_App
                     adapter.Fill(dt);
                 }
             }
+
+
             return dt;
         }
-
-
 
 
 
@@ -131,6 +131,69 @@ namespace Quiz_App
                     insertCmd.Parameters.AddWithValue("@total", totalQuestions);
                     insertCmd.ExecuteNonQuery();
                 }
+            }
+        }
+
+        public int GetTheoryDuration(int examId)
+        {
+            int duration = 0;
+            try
+            {
+                using (SqlConnection con = connection_class.GetConnection())
+                {
+                    con.Open();
+
+                    string theoryColumn = ResolveTheoryDurationColumn(con);
+                    if (string.IsNullOrWhiteSpace(theoryColumn))
+                    {
+                        return 0;
+                    }
+
+                    string query = "SELECT " + theoryColumn + " FROM tbl_exam_settings WHERE ex_id = @examId";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@examId", examId);
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && int.TryParse(result.ToString(), out int minutes))
+                        {
+                            duration = minutes;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error getting theory duration: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return duration;
+        }
+
+        private string ResolveTheoryDurationColumn(SqlConnection connection)
+        {
+            if (ColumnExists(connection, "tbl_exam_settings", "theory_duration_minutes"))
+            {
+                return "theory_duration_minutes";
+            }
+
+            if (ColumnExists(connection, "tbl_exam_settings", "theory_duration"))
+            {
+                return "theory_duration";
+            }
+
+            return null;
+        }
+
+        private bool ColumnExists(SqlConnection connection, string tableName, string columnName)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table AND COLUMN_NAME = @column",
+                connection))
+            {
+                cmd.Parameters.AddWithValue("@table", tableName);
+                cmd.Parameters.AddWithValue("@column", columnName);
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
 

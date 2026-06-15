@@ -1,4 +1,4 @@
-﻿// MasterSheetForm.cs
+// MasterSheetForm.cs
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class MasterSheetForm : Form
+    public partial class MasterSheetForm : BaseForm
     {
         private string selectedBatchCode;
 
@@ -18,9 +18,35 @@ namespace Quiz_App
             InitializeComponent();
             selectedBatchCode = batchCode;
         }
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
 
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void MasterSheetForm_Load(object sender, EventArgs e)
         {
+            
+            MasterSheetForm.ScaleForm(this);
             LoadMasterSheet();
             this.dataGridViewMaster.CellDoubleClick += dataGridViewMaster_CellDoubleClick;
         }
@@ -99,14 +125,7 @@ namespace Quiz_App
 
         private void ApplyMasterSheetColor()
         {
-            foreach (DataGridViewRow row in dataGridViewMaster.Rows)
-            {
-                row.DefaultCellStyle.BackColor = row.Index % 2 == 0 ? Color.LightBlue : Color.White;
-                row.DefaultCellStyle.SelectionBackColor = Color.LightGray;
-                row.DefaultCellStyle.SelectionForeColor = Color.Black;
-            }
-            dataGridViewMaster.AlternatingRowsDefaultCellStyle.BackColor = Color.LightCyan;
-            dataGridViewMaster.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            ModernUi.StyleDataGridView(dataGridViewMaster);
             dataGridViewMaster.MultiSelect = false;
         }
 
@@ -166,3 +185,4 @@ namespace Quiz_App
         }
     }
 }
+

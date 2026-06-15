@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +12,37 @@ using System.Data.SqlClient;
 
 namespace Quiz_App
 {
-    public partial class Exam_Shuffle : Form
+    public partial class Exam_Shuffle : BaseForm
     {
         public Exam_Shuffle()
         {
             InitializeComponent();
+        }
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -55,16 +81,17 @@ namespace Quiz_App
 
             MessageBox.Show("Shuffle setting saved successfully.", "Saved");
 
-            // 🔄 Refresh grid here
+            // ?? Refresh grid here
             RefreshGrid();
 
         }
 
         private void Exam_Shuffle_Load(object sender, EventArgs e)
         {
+            Exam_Shuffle.ScaleForm(this);
             SqlConnection con = connection_class.GetConnection();
 
-            // ✅ Fill ComboBox (exams)
+            // ? Fill ComboBox (exams)
             using (SqlDataAdapter da = new SqlDataAdapter("SELECT ex_id, ex_name FROM tbl_exams", con))
             {
                 DataTable dt = new DataTable();
@@ -79,7 +106,7 @@ namespace Quiz_App
                 comboBoxExams.SelectedIndex = -1;
             }
 
-            // ✅ Fill DataGridView
+            // ? Fill DataGridView
             RefreshGrid();
 
         }
@@ -99,14 +126,21 @@ namespace Quiz_App
                 @"SELECT e.ex_id, e.ex_name, 
                  CASE WHEN s.shuffle = 1 THEN 'Yes' ELSE 'No' END AS Shuffle
           FROM tbl_exam_settings s
-          INNER JOIN tbl_exams e ON s.ex_id = e.ex_id", con))
+          INNER JOIN tbl_exams e ON s.ex_id = e.ex_id
+          ORDER BY e.ex_name ASC", con))  // ? Alphabetical order
             {
                 DataTable dtGrid = new DataTable();
                 da.Fill(dtGrid);
                 dataGridView1.DataSource = dtGrid;
+
+                // Optional: make headers look better
+                dataGridView1.Columns["ex_id"].Visible = false;
+                dataGridView1.Columns["ex_name"].HeaderText = "Exam Name";
+                dataGridView1.Columns["Shuffle"].HeaderText = "Shuffle Enabled";
             }
         }
 
 
     }
 }
+

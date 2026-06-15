@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,11 +18,37 @@ using ClosedXML.Excel;
 
 namespace Quiz_App
 {
-    public partial class add_admin : Form
+    public partial class add_admin : BaseForm
     {
         public add_admin()
         {
             InitializeComponent();
+        }
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -66,16 +92,7 @@ namespace Quiz_App
                 // **Set DataSource here**
                 dataGridView1.DataSource = dt;
 
-                // Then your color settings:
-                dataGridView1.BackgroundColor = Color.LightYellow;
-                dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
-                dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                dataGridView1.DefaultCellStyle.BackColor = Color.LightCyan;
-                dataGridView1.DefaultCellStyle.ForeColor = Color.DarkBlue;
-                dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
-                dataGridView1.EnableHeadersVisualStyles = false;
-
+                ModernUi.StyleDataGridView(dataGridView1);
                 dataGridView1.ClearSelection();
 
                 con.Close();
@@ -83,13 +100,9 @@ namespace Quiz_App
         }
 
         private void add_admin_Load(object sender, EventArgs e)
-
         {
-            // Make sure this is set on Form Load or Constructor
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.MultiSelect = true;
-            //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+            add_admin.ScaleForm(this);
 
             BindData();
         }
@@ -139,7 +152,7 @@ namespace Quiz_App
                         return;
                     }
 
-                    // ✅ Refresh DataGridView manually after deletion
+                    // ? Refresh DataGridView manually after deletion
                     string selectQuery = "SELECT * FROM tbl_admin";
                     using (SqlCommand cmd = new SqlCommand(selectQuery, conn))
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
@@ -147,6 +160,7 @@ namespace Quiz_App
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
                         dataGridView1.DataSource = dt;
+                        ModernUi.StyleDataGridView(dataGridView1);
                     }
 
                     dataGridView1.ClearSelection();
@@ -328,3 +342,4 @@ namespace Quiz_App
         }
     }
 }
+

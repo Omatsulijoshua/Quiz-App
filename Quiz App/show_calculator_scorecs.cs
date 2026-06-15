@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,13 +12,38 @@ using System.Data.SqlClient;
 
 namespace Quiz_App
 {
-    public partial class show_calculator_scorecs : Form
+    public partial class show_calculator_scorecs : BaseForm
     {
         public show_calculator_scorecs()
         {
             InitializeComponent();
         }
 
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         return_class rc = new return_class();
 
         private void btnSaveDuration_Click(object sender, EventArgs e)
@@ -33,7 +58,7 @@ namespace Quiz_App
 
             int selectedSubjectId = Convert.ToInt32(cmbShowScoreExam.SelectedValue);
 
-            SqlConnection con = connection_class.GetConnection();
+            using (SqlConnection con = connection_class.GetConnection())
             {
                 string query = "UPDATE tbl_exam_settings SET show_score = @show_score WHERE ex_id = @ex_id";
 
@@ -44,11 +69,13 @@ namespace Quiz_App
 
                     con.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
                 }
             }
 
             MessageBox.Show("Score display setting updated.");
+
+            // ?? Refresh DataGridView + ComboBoxes
+            LoadGrid();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -63,7 +90,7 @@ namespace Quiz_App
 
             int selectedSubjectId = Convert.ToInt32(cmbShowCalcExam.SelectedValue);
 
-            SqlConnection con = connection_class.GetConnection();
+            using (SqlConnection con = connection_class.GetConnection())
             {
                 string query = "UPDATE tbl_exam_settings SET show_calculator = @show_calc WHERE ex_id = @ex_id";
 
@@ -74,15 +101,19 @@ namespace Quiz_App
 
                     con.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
                 }
             }
 
             MessageBox.Show("Calculator display setting updated.");
+
+            // ?? Refresh DataGridView + ComboBoxes
+            LoadGrid();
         }
 
         private void show_calculator_scorecs_Load(object sender, EventArgs e)
         {
+            show_calculator_scorecs.ScaleForm(this);
+            
             try
             {
                 LoadGrid(); // just call the method
@@ -129,14 +160,14 @@ namespace Quiz_App
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
 
-                // ✅ Bind to DataGridView
+                // ? Bind to DataGridView
                 dataGridView1.DataSource = dt;
                 dataGridView1.Columns["ex_id"].Visible = false;
                 dataGridView1.Columns["ex_name"].HeaderText = "Exam Name";
                 dataGridView1.Columns["show_score"].HeaderText = "Show Score";
                 dataGridView1.Columns["show_calculator"].HeaderText = "Show Calculator";
 
-                // ✅ Re-bind ComboBoxes
+                // ? Re-bind ComboBoxes
                 cmbShowScoreExam.DataSource = dt.Copy();
                 cmbShowScoreExam.DisplayMember = "ex_name";
                 cmbShowScoreExam.ValueMember = "ex_id";
@@ -149,3 +180,4 @@ namespace Quiz_App
 
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,14 +12,38 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class GenerateResult : Form
+    public partial class GenerateResult : BaseForm
     {
         public string ScoreID { get; set; }
         public string score { get; set; }
 
         public string percentage { get; set; }
 
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
 
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
 
 
         public void UpdateData(string scoreID, string score, string percentage)
@@ -82,7 +106,7 @@ namespace Quiz_App
 
         private void GenerateResult_Load(object sender, EventArgs e)
         {
-
+            GenerateResult.ScaleForm(this);
 
             labelScore.Text = score;
 
@@ -108,3 +132,4 @@ namespace Quiz_App
         }
     }
 }
+

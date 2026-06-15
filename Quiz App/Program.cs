@@ -1,9 +1,6 @@
 ﻿using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Quiz_App
@@ -16,17 +13,17 @@ namespace Quiz_App
         [STAThread]
         static void Main()
         {
-
-            // Set EPPlus license context once for the whole app
-           // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Make the app DPI aware
             if (Environment.OSVersion.Version.Major >= 6)
+            {
                 SetProcessDPIAware();
+            }
 
-            Application.Run(new Home());
+            connection_class.Initialize();
+            TheorySchemaInstaller.TryEnsureTheoryInfrastructure(out _);
+            Application.Run(new Home(/*1, 101, 10*/));
         }
     }
 }

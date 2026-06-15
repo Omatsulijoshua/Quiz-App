@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class make_subscription : Form
+    public partial class make_subscription : BaseForm
     {
-        private const decimal PricePerMonth = 1000m; // ₦1000 per month
+        private const decimal PricePerMonth = 1000m; // ?1000 per month
        
         public make_subscription()
         {
@@ -26,12 +26,38 @@ namespace Quiz_App
             });
 
             // Make sure amount label starts blank
-            lblAmount.Text = "₦0";
+            lblAmount.Text = "?0";
 
 
 
         }
 
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
+        }
         private void cmbDuration_SelectedIndexChanged(object sender, EventArgs e)
         {
            
@@ -55,7 +81,7 @@ namespace Quiz_App
 
         private void make_subscription_Load(object sender, EventArgs e)
         {
-
+            make_subscription.ScaleForm(this);
         }
 
         private void btnRequest_Click(object sender, EventArgs e)
@@ -98,7 +124,7 @@ namespace Quiz_App
             {
                 int months = GetMonthsFromSelection(cmbDuration.SelectedItem.ToString());
                 decimal totalAmount = months * PricePerMonth;
-                lblAmount.Text = "₦" + totalAmount.ToString("N0");
+                lblAmount.Text = "?" + totalAmount.ToString("N0");
             }
         }
 
@@ -109,3 +135,4 @@ namespace Quiz_App
         }
     }
 }
+

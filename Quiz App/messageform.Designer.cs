@@ -38,6 +38,7 @@ namespace Quiz_App
             this.label5 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,7 +59,7 @@ namespace Quiz_App
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.label3.Location = new System.Drawing.Point(152, 146);
+            this.label3.Location = new System.Drawing.Point(105, 142);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 42);
             this.label3.TabIndex = 0;
@@ -81,7 +82,7 @@ namespace Quiz_App
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.label5.Location = new System.Drawing.Point(52, 192);
+            this.label5.Location = new System.Drawing.Point(4, 200);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(40, 42);
             this.label5.TabIndex = 0;
@@ -104,18 +105,30 @@ namespace Quiz_App
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.label2.Location = new System.Drawing.Point(141, 265);
+            this.label2.Location = new System.Drawing.Point(94, 261);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 42);
             this.label2.TabIndex = 0;
             this.label2.Text = "0";
             // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(169, 341);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(259, 39);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Start Theory";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // messageform
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(597, 474);
+            this.ClientSize = new System.Drawing.Size(545, 421);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.label2);
@@ -141,5 +154,6 @@ namespace Quiz_App
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button2;
     }
 }

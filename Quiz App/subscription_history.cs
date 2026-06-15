@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,13 +11,39 @@ using System.Windows.Forms;
 
 namespace Quiz_App
 {
-    public partial class subscription_history : Form
+    public partial class subscription_history : BaseForm
     {
         public subscription_history()
         {
             InitializeComponent();
             dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
             LoadHistoryByDate(DateTime.Today); // default load today
+        }
+
+        private const int BaseWidth = 1920;
+        private const int BaseHeight = 1080;
+
+        public static void ScaleForm(Form form)
+        {
+            // Get current screen resolution
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+
+            // Calculate scale factors
+            float scaleX = (float)screenWidth / BaseWidth;
+            float scaleY = (float)screenHeight / BaseHeight;
+
+            // Apply scaling to form and controls
+            form.Scale(new SizeF(scaleX, scaleY));
+
+            // Adjust font scaling (optional, but makes UI balanced)
+            foreach (Control c in form.Controls)
+            {
+                c.Font = new Font(c.Font.FontFamily, c.Font.Size * Math.Min(scaleX, scaleY));
+            }
+
+            // Center form
+            form.StartPosition = FormStartPosition.CenterScreen;
         }
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
@@ -91,7 +117,7 @@ namespace Quiz_App
 
         private void subscription_history_Load(object sender, EventArgs e)
         {
-
+            subscription_history.ScaleForm(this);
         }
 
         private void btn_refresh_Click(object sender, EventArgs e)
@@ -106,7 +132,7 @@ namespace Quiz_App
                 using (SqlConnection conn = connection_class.GetConnection())
                 {
                     conn.Open();
-                    string query = "SELECT TOP 1 * FROM subscription ORDER BY subscription_id DESC"; // ✅ fixed column
+                    string query = "SELECT TOP 1 * FROM subscription ORDER BY subscription_id DESC"; // ? fixed column
                     SqlCommand cmd = new SqlCommand(query, conn);
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -139,4 +165,5 @@ namespace Quiz_App
 }
     
     
+
 
